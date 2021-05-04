@@ -1,0 +1,44 @@
+{
+  "id": 1,
+  "description": "LSD CryptoParroty",
+  "attributes": [
+    {
+      "trait_type": "Base", 
+      "value": "Parrot"
+    }, 
+    {
+      "trait_type": "Rarity", 
+      "value": "Platinum"
+    }, 
+    {
+      "trait_type": "Level", 
+      "value": 10000
+    }, 
+    {
+      "trait_type": "Stamina", 
+      "value": 14
+    }, 
+    {
+      "trait_type": "Personality", 
+      "value": "ROCKSTAR"
+    }, 
+    {
+      "display_type": "boost_number", 
+      "trait_type": "FUCK Power", 
+      "value": 69
+    }, 
+    {
+      "display_type": "boost_percentage", 
+      "trait_type": "Stamina Increase", 
+      "value": 79
+    }, 
+    {
+      "display_type": "number", 
+      "trait_type": "Generation", 
+      "value": 1
+    }
+  ],
+  "external_url": "http://37.15.36.81:1250/nftTest/test.html",
+  "image": "https://g.redditmedia.com/F2mSqRceNQbYdWhAaTo0xy4uR4QxQlBMRFYAn1xrKK4.gif?w=320&s=b2d1e56e82733371048a7e2b6d61b7f8",
+  "name": "CryptoParrot"
+}

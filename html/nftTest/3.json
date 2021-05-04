@@ -1,0 +1,35 @@
+{
+  "id": 1,
+  "description": "RUDE CARD #1",
+  "attributes": [ 
+    {
+      "trait_type": "Rarity", 
+      "value": "Platinum"
+    },
+    {
+      "trait_type": "Glitter", 
+      "value": "10000"
+    }, 
+    {
+      "trait_type": "Level", 
+      "value": 1000000
+    },  
+    {
+      "trait_type": "Personality", 
+      "value": "ROCKSTAR"
+    }, 
+    {
+      "display_type": "boost_number", 
+      "trait_type": "FUCK Power", 
+      "value": 69
+    }, 
+    {
+      "display_type": "number", 
+      "trait_type": "Generation", 
+      "value": 1
+    }
+  ],
+  "external_url": "https://gateway.pinata.cloud/ipfs/QmdFm2Wag9geK2efbAroBfSwREs6WJioaiocadNycaH426",
+  "video": "https://gateway.pinata.cloud/ipfs/QmdFm2Wag9geK2efbAroBfSwREs6WJioaiocadNycaH426",
+  "name": "RDBZCards"
+}

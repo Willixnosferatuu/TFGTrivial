@@ -1,0 +1,20 @@
+# Fitxer .htaccess modifica la configuracio d'apache
+
+# Comprovem que esta habilitat el modul mod_rewrite
+<IfModule mod_rewrite.c>
+    # Habilita el mod rewrite
+    RewriteEngine on
+    # Url base on es redireccionaran les peticions
+    # /
+    RewriteBase /
+    # Aquesta condicio indica que aplicarem la regla de rewrite (RewriteRule)
+    # *nomes* quan el fitxer o directori especificat en la peticio HTTP no 
+    # existeixi en el servidor.
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    # Reenviem la peticio al fitxer index.php pasant-li la URL en el parametre url
+    # QSA|qsappend ens mante la Query String existent, 
+    # o sigui els paramteres GET de la peticio HTTP.
+    # L|last per no procesarem mes regles.
+    RewriteRule (.*) index.php?url=$1 [QSA,L]
+</IfModule>

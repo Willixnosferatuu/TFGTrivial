@@ -1,0 +1,95 @@
+<html><head><title>WebSocket</title>
+<script type="text/javascript">
+	var socket;
+
+	function init() 
+	{
+		var host = "ws://37.15.36.40:9000"; // SERVER
+		try 
+		{
+			socket = new WebSocket(host);
+			log('WebSocket - status '+ socket.readyState);
+			socket.onopen    = function(msg) { 
+								   log("Welcome - status "+this.readyState); 
+							   };
+			socket.onmessage = function(msg) { 
+								   //log("Received: "+msg.data); 
+								   log(msg.data); 
+							   };
+			socket.onclose   = function(msg) { 
+								   log("Disconnected - status "+this.readyState); 
+							   };
+		}
+		catch(ex)
+		{ 
+			log(ex); 
+		}
+		$("msg").focus();
+	}
+
+	function send()
+	{
+		var txt,msg;
+		var username;
+		var color;
+		color = $("color").value;
+		username = $("nick").value;
+		txt = $("msg");
+		msg = username +":" + color + ":" + txt.value;
+		if(!msg) 
+		{ 
+			alert("Message can not be empty"); 
+			return; 
+		}
+		txt.value="";
+		txt.focus();
+		try 
+		{ 
+			socket.send(msg); 
+			//log('Sent: '+msg); 
+			log(msg);
+		} 
+		catch(ex) { 
+			log(ex); 
+		}
+	}
+
+	function quit()
+	{
+		if (socket != null) {
+			log("Goodbye!");
+			socket.close();
+			socket=null;
+		}
+	}
+
+	function reconnect() {
+		quit();
+		init();
+	}
+
+	// Utilities
+	function $(id){ return document.getElementById(id); }
+	//function log(msg){ $("log").innerHTML+="<br>"+msg; }
+	function log(msg)
+	{ 
+		var username = msg.split(":")[0];
+		var color = msg.split(":")[1];
+		var text = msg.split(":")[2];
+		$("log").innerHTML+="<p style='color: " + color +";'><strong>" +username + ": </strong>" + text + "</p>"; 
+	}
+	function onkey(event){ if(event.keyCode==13){ send(); } }
+</script>
+
+</head>
+<body onload="init()">
+<h3>WebSocket v2.00</h3>
+<div id="log"></div>
+<input id="msg" type="textbox" onkeypress="onkey(event)"/>
+<button onclick="send()">Send</button>
+<button onclick="quit()">Quit</button>
+<button onclick="reconnect()">Reconnect</button>
+<input id="nick" type="textbox" placeholder="user Name" onkeypress="onkey(event)"/>
+<input id="color" type="textbox" placeholder="color" onkeypress="onkey(event)"/>
+</body>
+</html>
