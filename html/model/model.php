@@ -39,4 +39,9 @@
 	    }
 	    return $string;
 	}
+
+	function generateRandomNum() 
+	{    
+	    return rand(1,6);
+	}
 ?>

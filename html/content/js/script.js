@@ -1,28 +1,3 @@
-var socket;
-
-function init() 
-{
-	var host = "ws://37.15.36.40:9000"; // SERVER
-	try 
-	{
-		socket = new WebSocket(host);
-		console.log('WebSocket - status '+ socket.readyState);
-		socket.onopen    = function(msg) { 
-							   console.log("Entra socket.OnOpen");
-						   };
-		socket.onmessage = function(msg) { 
-							   console.log("Recieved: " + msg.data);
-						   };
-		socket.onclose   = function(msg) { 
-							   console.log("Entra socket.OnClose");
-						   };
-	}
-	catch(ex)
-	{ 
-		console.log(ex); 
-	}
-}
-
 function testPostClick()
 {
 	console.log("Entra al script");
@@ -92,5 +67,58 @@ function playGame()
 
 function play()
 {
-	window.location = "controller/partida_controller.php";
+	window.location = "play";
+}
+
+function tirarDau()
+{
+	console.log("Entra tirarDau()");
+	var numDau ="";
+	$.ajax(
+	{
+		type:"Post",
+		url: "controller/dice_controller.php",
+		cache: false,
+		data:{},
+		success: function(response)
+		{
+    		$("#content").html(response);
+    		numDau = response.replace(/\D/g, '');
+    		console.log(numDau);
+    		determinarTorn(numDau);
+    		//var element = document.getElementById("btnStart");
+  			//element.classList.remove("btn-disable");
+  			document.getElementById("btnStart").disabled = false;
+  		},
+  		error: function(xhr)
+  		{
+  			console.log("error");
+  		}
+	});
+}
+
+function determinarTorn(numeroDau)
+{
+	var msg = {
+	    method: "determinarTorn",
+	    data: numeroDau,
+	    id:   1,
+	    date: Date.now()
+  	};
+
+  	// Send the msg object as a JSON-formatted string.
+  	//exampleSocket.send(JSON.stringify(msg));
+  	console.log("Entra determinarTorn");
+	try 
+	{ 
+		socket.send(JSON.stringify(msg)); 
+	} 
+	catch(ex) { 
+		console.log(ex); 
+	}
+}
+
+function test()
+{
+	document.getElementById("btnStart").disabled = false;
 }

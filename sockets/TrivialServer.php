@@ -3,27 +3,57 @@
     
     class TrivialServer extends WebSocketServer
     {
+        public $numerosDauxUser = array();
+
         protected function process ($user, $message) 
         {
-            /*$obj = json_decode($message);
-            $type = $obj->{'type'};
-            $msg = $obj->{'text'};
+            $obj = json_decode($message);
+            $method = $obj->{'method'};
+            $msg = $obj->{'data'};
             $id = $obj->{'id'};
             $date = $obj->{'date'};
 
-            echo ' user sent type: '.$type;
-            echo ' user sent text: '.$msg;
-            echo ' user sent id: '.$id;
-            echo ' user sent date: '.$date;*/
+            echo ' method: '.$method;
+            echo ' data: '.$msg;
+            echo ' id: '.$id. "\n";
+            //echo ' date: '.$date;
+
+            switch ($method) 
+            {
+                case 'determinarTorn':
+                    $numerosDauxUser[$user->id] = $msg;
+                    echo "Determinar ORDEN " .$msg. "\n";
+                    echo json_encode($numerosDauxUser);
+                    $jsonResponse = array('status' => 'ok', 'res' => 'orderNumero', 'method' => $method);
+                    $this->send($user,json_encode($jsonResponse));
+                    foreach ($this->users as $currentUser) 
+                    {
+                        //resta de sockets
+                        if($currentUser !== $user)
+                            $jsonResponse = array('status' => 'ok', 'res' => 'orderNumero', 'method' => 'altresJugadors');
+                            $this->send($currentUser,json_encode($jsonResponse));
+                    }
+                    break;
+                
+                default:
+                    # code...
+                    break;
+            }
+
             //var msg = JSON.parse(event.data);
             //var time = new Date(msg.date);
             //var timeStr = time.toLocaleTimeString();
-            echo 'user sent: '.$message.PHP_EOL;
-            foreach ($this->users as $currentUser) 
+            //echo 'user sent: '.$message.PHP_EOL;    
+
+            /*foreach ($this->users as $currentUser) 
             {
+                //resta de sockets
                 if($currentUser !== $user)
-                $this->send($currentUser,$message);
-            }
+                    $this->send($currentUser,json_encode($jsonResponse));
+                //socket origen (usuari que ha contactat)
+                if($currentUser == $user)
+                    $this->send($currentUser,json_encode($jsonResponse));
+            }*/
         }
 
         protected function connected ($user) 

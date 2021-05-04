@@ -21,6 +21,9 @@ if (!isset($_GET["url"]))
 					echo file_get_contents($attachment_location);
 				}
 				break;
+			case "play":
+				require ("controller/partida_controller.php");
+				break;
 			//case "user":
 				//$action= $url[1];
 				//switch($action){
