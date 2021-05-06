@@ -52,22 +52,36 @@ function playGame()
 	    id:   1,
 	    date: Date.now()
   	};
-
-  	// Send the msg object as a JSON-formatted string.
-  	//exampleSocket.send(JSON.stringify(msg));
-  	console.log("Entra playGame");
-	try 
-	{ 
-		socket.send(JSON.stringify(msg)); 
-	} 
-	catch(ex) { 
-		console.log(ex); 
-	}
+  	sockSend(msg);
 }
 
 function play()
 {
-	window.location = "play";
+	var msg = {
+	    method: "crearPartida",
+	    data: "TEST",
+	    id:   1,
+	    date: Date.now()
+  	};
+  	
+	//window.location = "play";
+	$.ajax(
+	{
+		type:"Post",
+		url: "play",
+		cache: false,
+		data:{},
+		success: function(response)
+		{
+    		$("#content").html(response);
+  			//document.getElementById("btnStart").disabled = false;
+  		},
+  		error: function(xhr)
+  		{
+  			console.log("error");
+  		}
+	});
+	sockSend(msg);
 }
 
 function tirarDau()
@@ -82,7 +96,7 @@ function tirarDau()
 		data:{},
 		success: function(response)
 		{
-    		$("#content").html(response);
+    		$("#contentPartidaFile").html(response);
     		numDau = response.replace(/\D/g, '');
     		console.log(numDau);
     		determinarTorn(numDau);
@@ -105,20 +119,35 @@ function determinarTorn(numeroDau)
 	    id:   1,
 	    date: Date.now()
   	};
-
-  	// Send the msg object as a JSON-formatted string.
-  	//exampleSocket.send(JSON.stringify(msg));
   	console.log("Entra determinarTorn");
-	try 
-	{ 
-		socket.send(JSON.stringify(msg)); 
-	} 
-	catch(ex) { 
-		console.log(ex); 
-	}
+	sockSend(msg);
+}
+
+function printarTorn()
+{
+	var msg = {
+	    method: "printarTorns",
+	    data: "test",
+	    id:   1,
+	    date: Date.now()
+  	};
+  	console.log("Entra printarTorn");
+	sockSend(msg);
 }
 
 function test()
 {
 	document.getElementById("btnStart").disabled = false;
+}
+
+function sockSend(msg)
+{
+	try 
+	{ 
+		socket.send(JSON.stringify(msg)); 
+	} 
+	catch(ex) 
+	{ 
+		console.log(ex); 
+	}
 }

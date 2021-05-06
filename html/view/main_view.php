@@ -7,11 +7,12 @@
 		<link rel="stylesheet" href="content/css/sheet.css">
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 		<script src="content/js/script.js"></script>
+		<script src="content/js/webSockets.js"></script>
 	</head>
 	<header class="header">
 		<h1>Triviia willax</h1>
 	</header>
-	<body><!--<body onload="init()">-->
+	<body onload="init()">
 		<div class="main">
 			<img src="content/img/unnamed.png"class="mainImage">
 			<br/>

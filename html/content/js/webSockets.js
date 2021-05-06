@@ -2,7 +2,7 @@ var socket;
 
 function init() 
 {
-	var host = "ws://37.15.36.40:9000"; // SERVER
+	var host = "ws://192.168.1.100:9000"; // SERVER
 	try 
 	{
 		socket = new WebSocket(host);
@@ -32,9 +32,8 @@ function init()
 							   	else
 							   	{
 							   		$('#content').html("ERROR");
-							   	}
-							   							   
-							   console.log("Recieved: " + msg.data);
+								   	console.log("Recieved: " + msg.data);
+							   	}							   							   
 						   };
 		socket.onclose   = function(msg) { 
 							   console.log("Entra socket.OnClose");
