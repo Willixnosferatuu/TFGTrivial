@@ -18,15 +18,15 @@
 			<br/>
 			<hr/>
 			<br/>
-			<div class="buttons">
-				<button onclick="testPostClick()" class="mainButtons">TEST</button>
+			<div class="buttons" id="mnuButtons">
+				<!--<button onclick="testPostClick()" class="mainButtons">TEST</button>-->
 				<button onclick="joinGame()" class="mainButtons">Unirse</button>
 				<button onclick="play()" class="mainButtons">Jugar</button>
 				<button onclick="createGame()" class="mainButtons">Crear Partida</button>	
-				<p>Num. Jugadores: <input type="text" id="maxPlayers" name="maxPlayers"></p>			
+				<!--<p>Num. Jugadores: <input type="text" id="maxPlayers" name="maxPlayers"></p>-->		
 			</div>
 			<div id="content">
-				<p>esto deberia cambiar</p>
+				<!--<p>esto deberia cambiar</p>-->
 			</div>
 		</div>
 	</body>

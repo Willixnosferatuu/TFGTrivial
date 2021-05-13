@@ -24,6 +24,12 @@ if (!isset($_GET["url"]))
 			case "play":
 				require ("controller/partida_controller.php");
 				break;
+			case "pregunta":
+				require ("controller/pregunta_controller.php");
+				break;
+			case "tauler":
+				require ("controller/tauler_controller.php");
+				break;
 			//case "user":
 				//$action= $url[1];
 				//switch($action){

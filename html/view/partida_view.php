@@ -1,10 +1,11 @@
 <div>
 	<div> 
-		<button onclick="tirarDau()" class="mainButtons">Llençar dau</button>
+		<br/>
+		<button onclick="tirarDau()" class="mainButtons" id="dauTorns">Llençar dau</button>
 	</div>
 	<div id="contentPartidaFile">
 		<div id="pregunta">
-			<p>Qui trequi el número més gran comença</p>
+			<p>Qui tregui el número més gran comença</p>
 			<!--<button onclick="tirarDau()" class="mainButtons">Llençar dau</button>-->
 		</div>
 	</div>
@@ -12,13 +13,13 @@
 	</div>
 	<br/>
 	<div id="començarPartida">
-		<button id="btnStart" onclick="" class="">ComençarPartida !</button>
+		<button id="btnStart" onclick="startPartida()" class="">ComençarPartida !</button>
 	</div>
 	<br/>
-	<div>
+	<!--<div>
 		<button onclick="test()">Habilitar boto de dalt TEST</button>
 		<button onclick="printarTorn()">printarTorns</button>
-	</div>
+	</div>-->
 </div>
 <script type="text/javascript">
 	document.getElementById("btnStart").disabled = true;

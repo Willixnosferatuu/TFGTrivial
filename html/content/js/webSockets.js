@@ -20,11 +20,20 @@ function init()
 								   	switch (method) 
 								   	{
 									  	case "determinarTorn":
-									    	$('#torn').html(res.res);
+									  		determinarTornReturned(res.res);									    	
 										    break;
-									  	case "altresJugadors":
-									  		$('#jsonResponse').html("L'altre jugador ha tret un " + res.res);								    
+									    case "goToQuestion":
+									  		goToQuestion(res.res);							  
 										    break;
+									    case "goToTauler":
+									  		goToTauler(res.res);									 									  										    
+										    break;
+									    case "correctPregunta":
+									  		correccioResposta(res.res);									 									  										    
+										    break;
+									    /*case "nextTorn":
+									  		nextTorn(res.res);									 									  										    
+										    break;*/
 									  	default:								    
 										    break;
 										}

@@ -29,3 +29,5 @@ class MyUser extends WebSocketUser {
     $this->myId = $myId;
   }
 }
+
+?>
