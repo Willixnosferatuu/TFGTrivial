@@ -14,7 +14,7 @@
         function __construct($user, $idPartida) 
         {
             $this->id = $idPartida;
-            $this->partidaUsers[] = $user;
+            $this->addUser($user);
             $this->state = "Created";  
             $this->tornManager = new TornManager();
             $this->preguntes = array();
@@ -26,7 +26,7 @@
             {
                 $this->partidaUsers[] = $user;
             }*/
-            $this->partidaUsers[] = $user;
+            $this->partidaUsers[$user->getId()] = $user;
             if (empty($this->partidaUsers)) 
             {
                 echo "USERS VACIO \n";
@@ -40,6 +40,16 @@
         public function getUsers()
         {
             return $this->partidaUsers;
+        }
+
+        public function getUsersAndPoints()
+        {
+            $res = array();
+            foreach ($this->partidaUsers as $u) 
+            {
+                $res[$u->getId()] = $u->getPoints();
+            }
+            return $res;
         }
 
         public function getId()
@@ -80,10 +90,15 @@
             return $res;
         }
 
-        public function corregirPregunta($resposta)
+        public function corregirPregunta($resposta, $user)
         {
             $pregunta = array_pop($this->preguntes);
-            return $pregunta->PreguntaCorrecte($resposta);
+            $correcte = $pregunta->PreguntaCorrecte($resposta);
+            if ($correcte) 
+            {
+                $this->partidaUsers[$user]->addPoints();
+            }
+            return $correcte;
         }
         
         public function nextTorn()

@@ -27,6 +27,12 @@ class User
   public function addPoints()
   {
     $this->points = $this->points + 10;
+    var_dump($this->points);
+    return $this->points;
+  }
+
+  public function getPoints()
+  {
     return $this->points;
   }
 }

@@ -1,61 +1,73 @@
 <?php   
     require_once('websockets.php');
     require_once('partida.php');
+    require_once('user.php');
     
     class TrivialServer extends WebSocketServer
     {
         public $partida = array();
+        private $i=0;
+        private $userIdSocketId = array();
 
         protected function process ($user, $message) 
         {
+            global $i;
             global $partida;
             $obj = json_decode($message);
             $method = $obj->{'method'};
             $msg = $obj->{'data'};
-            $id = $obj->{'id'};
+            $idPlayer = $obj->{'idPlayer'};
+            $idPartida = $obj->{'idPartida'};
             $date = $obj->{'date'};
 
             echo ' method: '.$method;
             echo ' data: '.$msg;
-            echo ' id: '.$id. "\n";
+            echo ' idPlayer: '.$idPlayer. "\n";
+            echo ' idPartida: '.$idPartida. "\n";
             //echo ' date: '.$date;
 
             switch ($method) 
             {
                 case 'crearPartida':
                     $idPartida = 1;
+                    $this->i = $this->i+1;
+                    $userTrivial = new User($this->i, $user->id);
+                    $this->userIdSocketId[$userTrivial->getId()] = $user->id;
                     if (!empty($partida)) 
                     {
-                        $partida[$idPartida]->addUser($user);
+                        $partida[$idPartida]->addUser($userTrivial);
                         echo "IdPartida: " .$partida[$idPartida]->getId();
                         echo "\n";
                         echo "users: ";
                         $us = $partida[$idPartida]->getUsers();
                         foreach ($us as $u) 
                         {
-                            echo $u->id;
+                            echo $u->getId();
                         }
                         echo "\n";                        
                     }
                     else
                     {
-                        $partida[$idPartida] = new Partida($user, $idPartida);
+                        $partida[$idPartida] = new Partida($userTrivial, $idPartida);
                         echo "IdPartida: " .$partida[$idPartida]->getId();
                         echo "\n";
                         echo "users: ";
                         $us = $partida[$idPartida]->getUsers();
                         foreach ($us as $u) 
                         {
-                            echo $u->id;
+                            echo $u->getId();
                         }
                         echo "\n";
                     }
                     echo $msg. "\n";
+                    $res = array('idPartida' => $partida[$idPartida]->getId(), 'idPlayer' => $userTrivial->getId());
+                    $jsonResponse = array('status' => 'ok', 'res' => $res, 'method' => $method);
+                    $this->send($user,json_encode($jsonResponse));
                     break;
                 case 'determinarTorn':
                     echo "Determinar ORDEN " .$msg. "\n";
                     $idPartida = 1;
-                    $partida[$idPartida]->tornManager->addDiceUser($user->id, $msg);
+                    $partida[$idPartida]->tornManager->addDiceUser($idPlayer, $msg);
                     /*if (!in_array($msg, $numerosDauxUser)) 
                     {
                         $numerosDauxUser[$user->id] = $msg;
@@ -89,14 +101,16 @@
                     $primerJugador = array_keys($partida[$idPartida]->tornManager->DauUsuari)[0];
                     foreach ($this->users as $currentUser) 
                     {
-                        if ($currentUser->id==$primerJugador) 
+                        if ($currentUser->id==$this->userIdSocketId[$primerJugador]) 
                         {
-                            $jsonResponse = array('status' => 'ok', 'method' => 'goToTauler', 'res'=>'');                        
+                            $res = array('primerTorn' => '0', 'puntuacions' => $partida[$idPartida]->getUsersAndPoints());
+                            $jsonResponse = array('status' => 'ok', 'method' => 'goToTauler', 'res'=>$res);                        
                             $this->send($currentUser,json_encode($jsonResponse));
                         }
                         else
                         {
-                            $jsonResponse = array('status' => 'ok', 'method' => 'goToTauler', 'res'=>$primerJugador);                        
+                            $res = array('primerTorn' => $primerJugador, 'puntuacions' => $partida[$idPartida]->getUsersAndPoints());
+                            $jsonResponse = array('status' => 'ok', 'method' => 'goToTauler', 'res'=>$res);                        
                             $this->send($currentUser,json_encode($jsonResponse));
                         }   
                     }
@@ -117,34 +131,44 @@
                     break;
                 case 'correctPregunta':
                     $idPartida = 1;
-                    $correcte = $partida[$idPartida]->corregirPregunta($msg); 
-                                 
-                    foreach ($this->users as $currentUser) 
-                    {
-                        if($currentUser == $user)
-                        {
-                            $jsonResponse = array('status' => 'ok', 'method' => $method, 'res' => $correcte);
-                            $this->send($currentUser,json_encode($jsonResponse));
-                        }
-                    }
+                    $correcte = $partida[$idPartida]->corregirPregunta($msg, $idPlayer); 
+                    $usersPoints = $partida[$idPartida]->getUsersAndPoints();
+                    $res = array('correcte' => $correcte, 'puntuacions' => $usersPoints);
+                    var_dump($usersPoints);
+                    $jsonResponse = array('status' => 'ok', 'method' => $method, 'res' => $res);
+                    $this->send($user,json_encode($jsonResponse));
                     break;
                 case "next":
                     $idPartida = 1;
                     $nextPlayer = $partida[$idPartida]->nextTorn(); 
                     echo "nextPlayer = " .$nextPlayer; 
-                    foreach ($this->users as $currentUser) 
+                    if ($nextPlayer != "fiPartida") 
+                    {                        
+                        foreach ($this->users as $currentUser) 
+                        {
+                            if($currentUser->id == $this->userIdSocketId[$nextPlayer])
+                            {
+                                $res = array('primerTorn' => '0', 'puntuacions' => $partida[$idPartida]->getUsersAndPoints());
+                                $jsonResponse = array('status' => 'ok', 'method' => 'goToTauler', 'res' => $res);
+                                $this->send($currentUser,json_encode($jsonResponse));
+                            }
+                            else
+                            {
+                                $res = array('primerTorn' => $nextPlayer, 'puntuacions' => $partida[$idPartida]->getUsersAndPoints());
+                                $jsonResponse = array('status' => 'ok', 'method' => 'goToTauler', 'res' => $res); // METHOD NEXTTORN ???
+                                $this->send($currentUser,json_encode($jsonResponse));
+                            }
+                        } 
+                    }
+                    else
                     {
-                        if($currentUser->id == $nextPlayer)
+                        foreach ($this->users as $currentUser) 
                         {
-                            $jsonResponse = array('status' => 'ok', 'method' => 'goToTauler', 'res' => '');
+                            $res = array('primerTorn' => 'fiPartida', 'puntuacions' => $partida[$idPartida]->getUsersAndPoints());
+                            $jsonResponse = array('status' => 'ok', 'method' => 'goToTauler', 'res' => $res);
                             $this->send($currentUser,json_encode($jsonResponse));
                         }
-                        else
-                        {
-                            $jsonResponse = array('status' => 'ok', 'method' => 'goToTauler', 'res' => $nextPlayer); // METHOD NEXTTORN ???
-                            $this->send($currentUser,json_encode($jsonResponse));
-                        }
-                    } 
+                    }
                     break;
                 default:
                     # code...

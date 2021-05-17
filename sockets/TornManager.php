@@ -3,6 +3,7 @@
     {
     	public $DauUsuari = array();
     	public $torn;
+        private $maxRondas = 2;
 
     	function __construct() 
         {
@@ -29,6 +30,11 @@
         	elseif ($this->torn == count($this->DauUsuari)-1) 
         	{
         		$this->torn = 0;
+                $this->maxRondas = $this->maxRondas-1;
+                if ($this->maxRondas<0) 
+                {
+                    return "fiPartida";
+                }
         	}
         	return array_keys($this->DauUsuari)[$this->torn];
         }

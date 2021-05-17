@@ -1,3 +1,7 @@
+var idPartida;
+var idPlayer;
+var puntuacions;
+
 function testPostClick()
 {
 	console.log("Entra al script");
@@ -84,6 +88,14 @@ function play()
 	sockSend(msg);
 }
 
+function partidaCreada(response)
+{
+	idPartida = response.idPartida;
+	idPlayer = response.idPlayer;
+	console.log("idPartida: " + idPartida + "\n");
+	console.log("idPlayer: " + idPlayer + "\n");
+}
+
 function tirarDau()
 {
 	console.log("Entra tirarDau()");
@@ -117,7 +129,8 @@ function determinarTorn(numeroDau)
 	var msg = {
 	    method: "determinarTorn",
 	    data: numeroDau,
-	    id:   1,
+	    idPlayer:   idPlayer,
+	    idPartida: idPartida,
 	    date: Date.now()
   	};
   	console.log("Entra determinarTorn");
@@ -199,36 +212,62 @@ function showTablero()
 	});
 }
 
-function goToTauler(primerTorn)
+function goToTauler(result)
 {
-	$.ajax(
+	console.log("result goToTauler: " + result);
+	var primerTorn = result.primerTorn;
+	puntuacions = result.puntuacions;
+	if (primerTorn!="fiPartida") 
 	{
-		type:"Post",
-		url: "tauler",
-		cache: false,
-		data:{},
-		success: function(response)
+		$.ajax(
 		{
-    		$("#content").html(response);
-    		console.log(primerTorn);
-    		if (primerTorn) 
-    		{
-    			$('#primerTorn').html("Espera! Es el torn del jugador " + primerTorn);
-    			document.getElementById("btnDau").disabled = true;
-    		}
-    		else
-    		{
-    			$('#primerTorn').html("Es el teu torn, llença el dau!");
-    			document.getElementById("btnDau").disabled = false;
-    		}
-    		
-    		//goToQuestion();
-  		},
-  		error: function(xhr)
-  		{
-  			console.log("error");
-  		}
-	});
+			type:"Post",
+			url: "tauler",
+			cache: false,
+			data:{},
+			success: function(response)
+			{
+	    		$("#content").html(response);
+	    		$('#jugador').html("<p>Jugador " + idPlayer + "</p>");
+	    		updatePuntuacions();
+	    		if (primerTorn!=0) 
+	    		{
+	    			$('#primerTorn').html("Espera! Es el torn del jugador " + primerTorn);
+	    			document.getElementById("btnDau").disabled = true;
+	    		}
+	    		else
+	    		{
+	    			$('#primerTorn').html("Es el teu torn, llença el dau!");
+	    			document.getElementById("btnDau").disabled = false;
+	    		}
+	    		
+	    		//goToQuestion();
+	  		},
+	  		error: function(xhr)
+	  		{
+	  			console.log("error");
+	  		}
+		});
+	}
+	else
+	{
+		var puntuacionsTag ="";
+		for (var p in puntuacions) 
+		{
+			puntuacionsTag = puntuacionsTag + "<p>Jugador " + p + ": " + puntuacions[p] + "</p>";
+		}
+		$("#content").html("<p>FI PARTIDA</p>" + puntuacionsTag);
+	}	
+}
+
+function updatePuntuacions()
+{
+	var puntuacionsTag ="";
+	for (var p in puntuacions) 
+	{
+		puntuacionsTag = puntuacionsTag + "<p>Jugador " + p + ": " + puntuacions[p] + "</p>";
+	}
+	$('#puntuacions').html(puntuacionsTag);
 }
 
 function avanzar()
@@ -264,7 +303,8 @@ function loadQuestion(categoria)
 	var msg = {
 	    method: "pregunta",
 	    data: categoria,
-	    id:   1,
+	    idPlayer:   idPlayer,
+	    idPartida: idPartida,
 	    date: Date.now()
   	};
 	sockSend(msg);
@@ -303,14 +343,17 @@ function respondrePregunta()
 	var msg = {
 	    method: "correctPregunta",
 	    data: $("input[type='radio'][name='testQuest']:checked").val(),
-	    id:   1,
+	    idPlayer:   idPlayer,
+	    idPartida: idPartida,
 	    date: Date.now()
   	};
 	sockSend(msg);
 }
 
-function correccioResposta(correcte)
+function correccioResposta(result)
 {
+	var correcte = result.correcte;
+	puntuacions = result.puntuacions;	
 	if (correcte) 
 	{
 		$("#contentPregunta").html("<p>OLE! Has encertat. </p><button onclick='nextTorn()'>Next!</button>");
@@ -319,6 +362,7 @@ function correccioResposta(correcte)
 	{
 		$("#contentPregunta").html("<p>Llastima, aquesta no era la resposta... </p><button onclick='nextTorn()'>Next!</button>");
 	}	
+	
 }
 
 function nextTorn()
@@ -326,13 +370,9 @@ function nextTorn()
 	var msg = {
 	    method: "next",
 	    data: "",
-	    id:   1,
+	    idPlayer:   idPlayer,
+	    idPartida: idPartida,
 	    date: Date.now()
   	};
 	sockSend(msg);
 }
-
-/*function nextTorn(nextPlayer)
-{
-
-}*/

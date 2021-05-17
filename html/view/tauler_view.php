@@ -3,8 +3,12 @@
     <br/>
     <button id="btnDau" onclick="avanzar()" class="">Llençar</button> <!--HABILITAR NOMES QUAN ES EL TEU TORN-->
   </div>
-  <p>Punts jugador 1: 0</p>
-  <p>Punts jugador 2: 0</p>
+  <div id="jugador" style="color: Aqua">
+
+  </div>
+  <div id="puntuacions">
+
+  </div>
   <div id="primerTorn"></div>
   <!--JUGADORS I CASELLA POSICIO CADASCUN-->
 </div>

@@ -19,6 +19,9 @@ function init()
 					   				var method = res.method;
 								   	switch (method) 
 								   	{
+								   		case "crearPartida":
+									  		partidaCreada(res.res);									    	
+										    break;
 									  	case "determinarTorn":
 									  		determinarTornReturned(res.res);									    	
 										    break;
@@ -31,9 +34,6 @@ function init()
 									    case "correctPregunta":
 									  		correccioResposta(res.res);									 									  										    
 										    break;
-									    /*case "nextTorn":
-									  		nextTorn(res.res);									 									  										    
-										    break;*/
 									  	default:								    
 										    break;
 										}
