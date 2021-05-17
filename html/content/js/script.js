@@ -62,7 +62,7 @@ function playGame()
 function play()
 {
 	var msg = {
-	    method: "crearPartida",
+	    method: "jugar",
 	    data: "TEST",
 	    id:   1,
 	    date: Date.now()
@@ -94,6 +94,30 @@ function partidaCreada(response)
 	idPlayer = response.idPlayer;
 	console.log("idPartida: " + idPartida + "\n");
 	console.log("idPlayer: " + idPlayer + "\n");
+}
+
+function createGame()
+{
+	console.log("DENTRO CREATE GAME");
+	/*var msg = {
+	    method: "createGame",
+	    data: "TEST",
+	    id:   1,
+	    date: Date.now()
+  	};
+  	sockSend(msg);*/
+}
+
+function joinGame()
+{
+	console.log("DENTRO JOIN GAME");
+	/*var msg = {
+	    method: "joinGame",
+	    data: "TEST",
+	    id:   1,
+	    date: Date.now()
+  	};
+  	sockSend(msg);*/
 }
 
 function tirarDau()
@@ -186,7 +210,8 @@ function startPartida()
 	var msg = {
 	    method: "startPartida",
 	    data: "test",
-	    id:   1,
+	    idPartida:   idPartida,
+	    idPlayer: idPlayer,
 	    date: Date.now()
   	};
   	console.log("Partida Començada");
@@ -252,11 +277,21 @@ function goToTauler(result)
 	else
 	{
 		var puntuacionsTag ="";
+		var maxPoints = 0;
+		var winner = "";
 		for (var p in puntuacions) 
 		{
-			puntuacionsTag = puntuacionsTag + "<p>Jugador " + p + ": " + puntuacions[p] + "</p>";
+			if (puntuacions[p]>maxPoints) {maxPoints=puntuacions[p]; winner = p;}
+			if (p==idPlayer) 
+			{
+				puntuacionsTag = puntuacionsTag + "<p style='color: aqua'>Jugador " + p + ": " + puntuacions[p] + "</p>";
+			}
+			else
+			{
+				puntuacionsTag = puntuacionsTag + "<p>Jugador " + p + ": " + puntuacions[p] + "</p>";
+			}	
 		}
-		$("#content").html("<p>FI PARTIDA</p>" + puntuacionsTag);
+		$("#content").html("<p>FI PARTIDA</p>" + puntuacionsTag + "<h2>And the winner is : " + winner + "</h2>");
 	}	
 }
 
@@ -265,7 +300,14 @@ function updatePuntuacions()
 	var puntuacionsTag ="";
 	for (var p in puntuacions) 
 	{
-		puntuacionsTag = puntuacionsTag + "<p>Jugador " + p + ": " + puntuacions[p] + "</p>";
+		if (p==idPlayer) 
+		{
+			puntuacionsTag = puntuacionsTag + "<p style='color: aqua'>Jugador " + p + " : " + puntuacions[p] + "</p>";
+		}
+		else
+		{
+			puntuacionsTag = puntuacionsTag + "<p>Jugador " + p + " : " + puntuacions[p] + "</p>";
+		}		
 	}
 	$('#puntuacions').html(puntuacionsTag);
 }

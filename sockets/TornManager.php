@@ -31,7 +31,7 @@
         	{
         		$this->torn = 0;
                 $this->maxRondas = $this->maxRondas-1;
-                if ($this->maxRondas<0) 
+                if ($this->maxRondas==0) 
                 {
                     return "fiPartida";
                 }

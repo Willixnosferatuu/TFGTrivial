@@ -6,7 +6,7 @@
     {
         private $partidaUsers = array();
         private $id;
-        private $maxPlayers = 2;
+        private $maxPlayers = 3;
         private $state = "";
         public $tornManager;
         public $preguntes;
@@ -22,24 +22,34 @@
 
         public function addUser($user)
         {
-            /*if (count($partidaUsers)<$maxPlayers) 
+            $this->partidaUsers[$user->getId()] = $user;           
+        }
+
+        public function hasFreeSlot()
+        {
+            if (count($this->partidaUsers)<$this->maxPlayers)
             {
-                $this->partidaUsers[] = $user;
-            }*/
-            $this->partidaUsers[$user->getId()] = $user;
-            if (empty($this->partidaUsers)) 
-            {
-                echo "USERS VACIO \n";
+                return true;
             }
             else
             {
-                echo "Qty users: " .count($this->partidaUsers). "\n";
-            }            
+                return false;
+            }
         }
 
         public function getUsers()
         {
             return $this->partidaUsers;
+        }
+
+        public function getUsersSockets()
+        {
+            $res = array();
+            foreach ($this->partidaUsers as $u) 
+            {
+                $res[] = $u->getSocketId();
+            }
+            return $res;
         }
 
         public function getUsersAndPoints()

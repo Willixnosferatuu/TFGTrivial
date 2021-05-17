@@ -19,7 +19,7 @@ function init()
 					   				var method = res.method;
 								   	switch (method) 
 								   	{
-								   		case "crearPartida":
+								   		case "jugar":
 									  		partidaCreada(res.res);									    	
 										    break;
 									  	case "determinarTorn":
