@@ -34,3 +34,43 @@
   	width: 100%;
   	text-align: center;
 }
+
+/*#categories th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: center;
+  width: 16%;
+  background-color: #4CAF50;
+  color: white;
+}*/
+
+#categories{
+	text-align: center;
+	border: 2px black solid;
+	width: 100%;
+	margin-top: 20px;
+}
+
+#cat1{
+	background-color: green;
+}
+
+#cat2{
+	background-color: orange;
+}
+
+#cat3{
+	background-color: magenta;
+}
+
+#cat4{
+	background-color: brown;
+}
+
+#cat5{
+	background-color: pink;
+}
+
+#cat6{
+	background-color: aqua;
+}

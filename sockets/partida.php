@@ -6,7 +6,7 @@
     {
         private $partidaUsers = array();
         private $id;
-        private $maxPlayers = 3;
+        private $maxPlayers = 2;
         private $state = "";
         public $tornManager;
         public $preguntes;

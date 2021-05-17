@@ -12,16 +12,16 @@
   <div id="primerTorn"></div>
   <!--JUGADORS I CASELLA POSICIO CADASCUN-->
 </div>
-<div>
-  <table>
+<div class="tauler">
+  <table id="categories">
     <tbody>
       <tr>
-        <td>1 - Ciencia</td>
-        <td>2 - Esports</td>
-        <td>3 - Geografia</td>
-        <td>4 - Historia</td>
-        <td>5 - Art</td>
-        <td>6 - Entreteniment</td>
+        <th id="cat1">1 - Ciencia</td>
+        <th id="cat2">2 - Esports</td>
+        <th id="cat3">3 - Geografia</td>
+        <th id="cat4">4 - Historia</td>
+        <th id="cat5">5 - Art</td>
+        <th id="cat6">6 - Entreteniment</td>
       </tr> 
     </tbody>
   </table>
