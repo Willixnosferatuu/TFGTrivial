@@ -2,6 +2,7 @@
     require_once('websockets.php');
     require_once('partida.php');
     require_once('user.php');
+    require_once('../html/model/model.php');
     
     class TrivialServer extends WebSocketServer
     {
@@ -172,6 +173,8 @@
 
         protected function connected ($user) 
         {
+            $session_value=(isset($_SESSION['User']))?$_SESSION['User']:'';
+            echo "sessValue = " .$session_value. "\n";
             echo 'user connected'.PHP_EOL;
         }
         protected function closed ($user) 

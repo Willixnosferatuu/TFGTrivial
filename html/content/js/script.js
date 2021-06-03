@@ -25,6 +25,64 @@ function testPostClick()
 	});
 }
 
+function gotoRegister()
+{
+			$.ajax(
+			{
+				url:"createUser",
+				//url: "controller/register_controller.php",
+				cache: false,
+				success: function(response)
+				{
+		    		$("#content").html(response);
+		    		console.log(response);
+		  		},
+		  		error: function(xhr)
+		  		{
+		  			console.log("error");
+		  		}
+			});
+
+}
+
+
+function gotoLogin()
+{
+			$.ajax(
+			{
+				url: "login",
+				cache: false,
+				success: function(response)
+				{
+		    		$("#content").html(response);
+		    		console.log(response);
+		  		},
+		  		error: function(xhr)
+		  		{
+		  			console.log("error");
+		  		}
+			});
+
+}
+
+function Logout()
+{
+	$.ajax(
+			{
+				url: "logout",
+				cache: false,
+				success: function(response)
+				{
+		    		$("#content").html(response);
+		    		console.log(response);
+		  		},
+		  		error: function(xhr)
+		  		{
+		  			console.log("error");
+		  		}
+			});
+}
+
 function createGame()
 {
 	console.log("Entra createGame");
@@ -417,4 +475,11 @@ function nextTorn()
 	    date: Date.now()
   	};
 	sockSend(msg);
+}
+
+function initMenu()
+{
+	console.log("Entra initMenu");	
+    var userId='<?php echo $session_value;?>';
+	console.log(userId);
 }

@@ -30,6 +30,15 @@ if (!isset($_GET["url"]))
 			case "tauler":
 				require ("controller/tauler_controller.php");
 				break;
+			case "createUser":
+				require "view/register_view.php";
+				break;
+			case "login":
+				require "view/login_view.php";
+				break;
+			case "logout":
+				require "controller/logout_controller.php";
+				break;
 			//case "user":
 				//$action= $url[1];
 				//switch($action){

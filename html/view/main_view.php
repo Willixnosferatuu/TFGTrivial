@@ -10,7 +10,11 @@
 		<script src="content/js/webSockets.js"></script>
 	</head>
 	<header class="header">
+		<!--<?php $session_value=(isset($_SESSION['User']))?$_SESSION['User']:''; ?>-->
 		<h1>Triviia willax</h1>
+		<button onclick="gotoRegister()" id="btnRegister" class="">Register</button>
+		<button onclick="gotoLogin()" id="btnLogin" class="">Login</button>
+		<button onclick="Logout()" id="btnLogout" style="visibility: hidden;">Logout</button>
 	</header>
 	<body onload="init()">
 		<div class="main">
@@ -34,3 +38,8 @@
 		<p>Willax on da haus &#169; Made to Play!</p>
 	</footer>
 </html>	
+
+<script type="text/javascript">
+	//var userId='<?php echo $session_value;?>';
+	//console.log("user = " +userId);
+</script>
