@@ -14,17 +14,15 @@
 		return $tests;
 	}
 
-	function createGame($maxPlayers)
+	function createGame($maxPlayers, $difficulty)
 	{
 		$connection = connectDB();
 		$code = getRandomString();
-		$difficulty ="medium";
-		$status = "active";
-		//$maxPlayers="9";
-		$sql = "INSERT INTO Game(code,maxPlayers) VALUES ('".$code."', '".$maxPlayers."')";
+		$status = "created";
+		$sql = "INSERT INTO Game(code,maxPlayers, difficulty, status) VALUES ('".$code."', '".$maxPlayers."', '".$difficulty."', '".$status."')";
 		if($connection->query($sql)==TRUE)
 		{
-			return $code;
+			return array($code, $connection->insert_id);
 		}
 		else 
 		{ 
@@ -32,11 +30,9 @@
 		}
 	}
 
-	//$mysqli->insert_id
-
 	function insertUserGame($idUser, $idGame)
 	{
-	
+		$connection = connectDB();
 		$sql = "INSERT INTO User_Game(idUser,idGame, hasTurn, gamePoints, correctAnswers, turn) VALUES ('".$idUser."', '".$idGame."', 0, 0, 0, 0)";
 		if($connection->query($sql)==TRUE)
 		{
@@ -46,6 +42,56 @@
 		{ 
 			return false;
 		}
+	}
+
+	function updateGameStatus($idGame, $status)
+	{
+		$connection = connectDB();
+		$sql = "UPDATE Game SET status = '".$status."' WHERE id = '".$idGame."'";
+		if($connection->query($sql)==TRUE)
+		{
+			return true;
+		}
+		else 
+		{ 
+			return false;
+		}
+	}
+
+	function putPlayersInOrderBD($idGame, $orderedUsuaris)
+	{
+		$connection = connectDB();
+		$i=0;
+		foreach ($orderedUsuaris as $u) 
+		{
+			if ($i==0) 
+			{
+				$sql = "UPDATE User_Game SET turn = ".$i.", hasTurn=1 WHERE idGame = ".$idGame." AND idUser = ".$u."";
+			}
+			else
+			{
+				$sql = "UPDATE User_Game SET turn = ".$i." WHERE idGame = ".$idGame." AND idUser = ".$u."";
+			}	
+			$connection->query($sql);
+			$i = $i+1;
+		}
+	}
+
+	function roundTorn($idGame, $idUser, $torn)
+	{
+		$connection = connectDB();
+		$sql = "UPDATE User_Game SET hasTurn=".$torn." WHERE idGame = ".$idGame." AND idUser = ".$idUser."";
+		$connection->query($sql);
+	}
+
+	function addPointsUserBD($idGame, $idUser, $points)
+	{
+		$connection = connectDB();
+		$sql = "SELECT gamePoints FROM User_Game WHERE idGame = ".$idGame." AND idUser = ".$idUser."";
+		$oldPoints = $connection->query($sql);
+		$newPoints = $oldPoints + $points;
+		$sql = "UPDATE User_Game SET gamePoints=".$newPoints." WHERE idGame = ".$idGame." AND idUser = ".$idUser."";
+		$connection->query($sql);
 	}
 
 	function getRandomString($length = 6) 

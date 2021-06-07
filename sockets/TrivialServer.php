@@ -1,8 +1,8 @@
-<?php   
+<?php
+    session_start();
     require_once('websockets.php');
     require_once('partida.php');
     require_once('user.php');
-    require_once('../html/model/model.php');
     
     class TrivialServer extends WebSocketServer
     {
@@ -20,6 +20,8 @@
             $idPlayer = $obj->{'idPlayer'};
             $idPartida = $obj->{'idPartida'};
             $date = $obj->{'date'};
+
+            var_dump($_SESSION["User"]);
 
             echo ' method: '.$method;
             echo ' data: '.$msg;
@@ -48,14 +50,16 @@
                         }
                         if (!$joined) 
                         {
-                            $idPartida = rand();
-                            $partidas[$idPartida] = new Partida($userTrivial, $idPartida);  
+                            $partida = new Partida($userTrivial);
+                            $idPartida = $partida->getId();
+                            $partidas[$idPartida] = $partida;  
                         }                                        
                     }
                     else
                     {
-                        $idPartida = rand();
-                        $partidas[$idPartida] = new Partida($userTrivial, $idPartida);
+                        $partida = new Partida($userTrivial);
+                        $idPartida = $partida->getId();
+                        $partidas[$idPartida] = $partida;  
                     }
                     $res = array('idPartida' => $idPartida, 'idPlayer' => $userTrivial->getId());
                     $jsonResponse = array('status' => 'ok', 'res' => $res, 'method' => $method);
@@ -80,9 +84,9 @@
                     }*/
                     if (count($partidas[$idPartida]->tornManager->DauUsuari) == $partidas[$idPartida]->getMaxPlayers()) 
                     {
+                        $jsonResponse = array('status' => 'ok', 'res' => $partidas[$idPartida]->tornManager->getOrdered(), 'method' => $method);
                         foreach ($this->users as $currentUser) 
-                        {
-                            $jsonResponse = array('status' => 'ok', 'res' => $partidas[$idPartida]->tornManager->getOrdered(), 'method' => $method);
+                        {                            
                             $this->send($currentUser,json_encode($jsonResponse));
                         }
                     }
@@ -173,8 +177,8 @@
 
         protected function connected ($user) 
         {
-            $session_value=(isset($_SESSION['User']))?$_SESSION['User']:'';
-            echo "sessValue = " .$session_value. "\n";
+            //$session_value=(isset($_SESSION['User']))?$_SESSION['User']:'';
+            //echo "sessValue = " .$session_value. "\n";
             echo 'user connected'.PHP_EOL;
         }
         protected function closed ($user) 
