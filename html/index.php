@@ -39,6 +39,12 @@ if (!isset($_GET["url"]))
 			case "logout":
 				require "controller/logout_controller.php";
 				break;
+			case "createGame":
+				require "view/createGame_view.php";
+				break;
+			case "joinGame":
+				require "view/joinGame_view.php";
+				break;
 			//case "user":
 				//$action= $url[1];
 				//switch($action){

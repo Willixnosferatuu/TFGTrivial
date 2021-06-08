@@ -32,6 +32,8 @@
             switch ($method) 
             {
                 case 'jugar':
+                    $difficulty = "medium";
+                    $maxPlayers = 2;
                     $joined = false;
                     $this->i = $this->i+1;
                     $userTrivial = new User($this->i, $user->id);
@@ -40,7 +42,7 @@
                     {
                         foreach ($partidas as $partida) 
                         {
-                            if ($partida->hasFreeSlot()) 
+                            if (!$partida->isPrivada() && $partida->hasFreeSlot()) 
                             {
                                 $partida->addUser($userTrivial);
                                 $idPartida = $partida->getId();
@@ -50,14 +52,14 @@
                         }
                         if (!$joined) 
                         {
-                            $partida = new Partida($userTrivial);
+                            $partida = new Partida($userTrivial, $maxPlayers, $difficulty);
                             $idPartida = $partida->getId();
                             $partidas[$idPartida] = $partida;  
                         }                                        
                     }
                     else
                     {
-                        $partida = new Partida($userTrivial);
+                        $partida = new Partida($userTrivial, $maxPlayers, $difficulty);
                         $idPartida = $partida->getId();
                         $partidas[$idPartida] = $partida;  
                     }
@@ -65,11 +67,40 @@
                     $jsonResponse = array('status' => 'ok', 'res' => $res, 'method' => $method);
                     $this->send($user,json_encode($jsonResponse));
                     break;
-                case 'createGame':
+                case 'createPrivateGame':
                     //retornar CODI TAULER, idPartida, idJugador, method=jugar
+                    $diff = $obj->{'difficulty'};
+                    $maxPlayers = $obj->{'maxPlayers'};
+                    $this->i = $this->i+1;
+                    $userTrivial = new User($this->i, $user->id);
+                    $this->userIdSocketId[$userTrivial->getId()] = $user->id;
+                    $partida = new Partida($userTrivial, $maxPlayers, $diff);
+                    $partida->setPrivate();
+                    $idPartida = $partida->getId();
+                    $partidas[$idPartida] = $partida;
+                    $res = array('idPartida' => $idPartida, 'idPlayer' => $userTrivial->getId(), 'code' => $partida->code);
+                    $jsonResponse = array('status' => 'ok', 'res' => $res, 'method' => $method);
+                    $this->send($user,json_encode($jsonResponse));
                     break;
-                case 'joinGame':
+                case 'joinPrivateGame':
                     //retornar idPartida, idJugador, method=jugar
+                    $code = $obj->{'code'};
+                    $this->i = $this->i+1;
+                    $userTrivial = new User($this->i, $user->id);
+                    $this->userIdSocketId[$userTrivial->getId()] = $user->id;
+                    foreach ($partidas as $partida) 
+                    {
+                        if ($partida->isPrivada() && $partida->code==$code && $partida->hasFreeSlot()) 
+                        {
+                            $partida->addUser($userTrivial);
+                            $idPartida = $partida->getId();
+                            $joined = true;
+                            break;
+                        }
+                    }
+                    $res = array('idPartida' => $idPartida, 'idPlayer' => $userTrivial->getId(), 'code' => $partida->code);
+                    $jsonResponse = array('status' => 'ok', 'res' => $res, 'method' => $method);
+                    $this->send($user,json_encode($jsonResponse));
                     break;
                 case 'determinarTorn':
                     echo "Determinar ORDEN " .$msg. "\n";

@@ -7,16 +7,19 @@
     {
         private $partidaUsers = array();
         private $id;
-        private $maxPlayers = 2;
+        private $maxPlayers;
         private $maxRondas = 2;
         private $state = "";
-        private $difficulty ="medium";
+        private $difficulty;
+        private $privada;
         public $tornManager;
         public $preguntes;
         public $code = "";
 
-        function __construct($user) 
+        function __construct($user, $maxPlayers, $difficulty) 
         {
+            $this->maxPlayers = $maxPlayers;
+            $this->difficulty = $difficulty;
             $this->state = "created";//hi habia 1 bgada un tornmanager k tukaba molt els collons i un dia bach agafat una butlla de vichi ktalan i li bach rebemntart el cairo_pattern_create_radial(x0, y0, r0, x1, y1, r1)
             $this->preguntes = array();
             $res = createGame($this->maxPlayers, $this->difficulty);
@@ -24,6 +27,7 @@
             $this->id = $res[1];
             $this->tornManager = new TornManager($this->id, $this->maxRondas);
             $this->addUser($user);
+            $this->privada = false;
             //$this->addUserPartidaBD($user->getId(), $this->id);
         }
 
@@ -101,6 +105,16 @@
         public function TerminatePartida()
         {
             $this->setState("finished");
+        }
+
+        public function setPrivada()
+        {
+            $this->privada = true;
+        }
+
+        public function isPrivada()
+        {
+            return $this->privada;
         }
 
         public function addPregunta($cat)

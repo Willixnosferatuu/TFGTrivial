@@ -27,63 +27,63 @@ function testPostClick()
 
 function gotoRegister()
 {
-			$.ajax(
-			{
-				url:"createUser",
-				//url: "controller/register_controller.php",
-				cache: false,
-				success: function(response)
-				{
-		    		$("#content").html(response);
-		    		console.log(response);
-		  		},
-		  		error: function(xhr)
-		  		{
-		  			console.log("error");
-		  		}
-			});
+	$.ajax(
+	{
+		url:"createUser",
+		//url: "controller/register_controller.php",
+		cache: false,
+		success: function(response)
+		{
+    		$("#content").html(response);
+    		console.log(response);
+  		},
+  		error: function(xhr)
+  		{
+  			console.log("error");
+  		}
+	});
 
 }
 
 
 function gotoLogin()
 {
-			$.ajax(
-			{
-				url: "login",
-				cache: false,
-				success: function(response)
-				{
-		    		$("#content").html(response);
-		    		console.log(response);
-		  		},
-		  		error: function(xhr)
-		  		{
-		  			console.log("error");
-		  		}
-			});
+	$.ajax(
+	{
+		url: "login",
+		cache: false,
+		success: function(response)
+		{
+    		$("#content").html(response);
+    		console.log(response);
+  		},
+  		error: function(xhr)
+  		{
+  			console.log("error");
+  		}
+	});
 
 }
 
 function Logout()
 {
 	$.ajax(
-			{
-				url: "logout",
-				cache: false,
-				success: function(response)
-				{
-		    		$("#content").html(response);
-		    		console.log(response);
-		  		},
-		  		error: function(xhr)
-		  		{
-		  			console.log("error");
-		  		}
-			});
+	{
+		url: "logout",
+		cache: false,
+		success: function(response)
+		{
+    		$("#content").html(response);
+    		console.log(response);
+  		},
+  		error: function(xhr)
+  		{
+  			console.log("error");
+  		}
+	});
 }
 
-function createGame()
+/*function createGame()
 {
 	console.log("Entra createGame");
 	$.ajax(
@@ -103,7 +103,7 @@ function createGame()
   			console.log("error");
   		}
 	});
-}
+}*/
 
 function playGame()
 {
@@ -152,6 +152,42 @@ function partidaCreada(response)
 	idPlayer = response.idPlayer;
 	console.log("idPartida: " + idPartida + "\n");
 	console.log("idPlayer: " + idPlayer + "\n");
+}
+
+function createGameShowForm()
+{
+	$.ajax(
+	{
+		url: "createGame",
+		cache: false,
+		success: function(response)
+		{
+    		$("#content").html(response);
+    		console.log(response);
+  		},
+  		error: function(xhr)
+  		{
+  			console.log("error");
+  		}
+	});
+}
+
+function joinGameShowForm()
+{
+	$.ajax(
+	{
+		url: "joinGame",
+		cache: false,
+		success: function(response)
+		{
+    		$("#content").html(response);
+    		console.log(response);
+  		},
+  		error: function(xhr)
+  		{
+  			console.log("error");
+  		}
+	});
 }
 
 function createGame()
