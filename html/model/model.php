@@ -19,7 +19,7 @@
 		$connection = connectDB();
 		$code = getRandomString();
 		$status = "created";
-		$sql = "INSERT INTO Game(code,maxPlayers, difficulty, status) VALUES ('".$code."', '".$maxPlayers."', '".$difficulty."', '".$status."')";
+		$sql = "INSERT INTO Game(code,maxPlayers, difficulty, status, private) VALUES ('".$code."', '".$maxPlayers."', '".$difficulty."', '".$status."', false)";
 		if($connection->query($sql)==TRUE)
 		{
 			return array($code, $connection->insert_id);
@@ -48,6 +48,20 @@
 	{
 		$connection = connectDB();
 		$sql = "UPDATE Game SET status = '".$status."' WHERE id = '".$idGame."'";
+		if($connection->query($sql)==TRUE)
+		{
+			return true;
+		}
+		else 
+		{ 
+			return false;
+		}
+	}
+
+	function updateGameToPrivate($idGame)
+	{
+		$connection = connectDB();
+		$sql = "UPDATE Game SET private = true WHERE id = '".$idGame."'";
 		if($connection->query($sql)==TRUE)
 		{
 			return true;

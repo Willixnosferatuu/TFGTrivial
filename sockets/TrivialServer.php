@@ -68,7 +68,7 @@
                     $this->send($user,json_encode($jsonResponse));
                     break;
                 case 'createPrivateGame':
-                    //retornar CODI TAULER, idPartida, idJugador, method=jugar
+                    //TOOOOOOOOOOOODOOOOOOOOOOOOOOOOOOOOOOOO
                     $diff = $obj->{'difficulty'};
                     $maxPlayers = $obj->{'maxPlayers'};
                     $this->i = $this->i+1;
@@ -83,7 +83,7 @@
                     $this->send($user,json_encode($jsonResponse));
                     break;
                 case 'joinPrivateGame':
-                    //retornar idPartida, idJugador, method=jugar
+                    //TOOOOOOOOOOOODOOOOOOOOOOOOOOOOOOOOOOOO
                     $code = $obj->{'code'};
                     $this->i = $this->i+1;
                     $userTrivial = new User($this->i, $user->id);

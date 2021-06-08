@@ -110,6 +110,7 @@
         public function setPrivada()
         {
             $this->privada = true;
+            updateGameToPrivate($this->id);
         }
 
         public function isPrivada()
