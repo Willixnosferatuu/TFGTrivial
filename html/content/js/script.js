@@ -65,7 +65,7 @@ function gotoLogin()
 	});
 }
 
-/*function loginValidate()
+function loginValidate()
 {
 	var user = document.getElementById("loginForm").elements["username"].value;
 	var password = document.getElementById("loginForm").elements["password"].value;
@@ -77,6 +77,7 @@ function gotoLogin()
 		data: {username: user, password: password},
 		success: function(response)
 		{
+			//TOOOOOOOOOOOOOOOOOOODDOOOOOOOOOOOOOOOOOOOOOOO
     		console.log(response);
   		},
   		error: function(xhr, exception)
@@ -84,7 +85,7 @@ function gotoLogin()
   			console.log("error");
   		}
 	});
-}*/
+}
 
 function Logout()
 {
