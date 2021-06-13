@@ -34,6 +34,12 @@ function init()
 									    case "correctPregunta":
 									  		correccioResposta(res.res);									 									  										    
 										    break;
+										case "createPrivateGame":
+											partidaPrivadaCreada(res.res);
+											break;
+										case "Err":
+											console.log(res.res);
+											break;
 									  	default:								    
 										    break;
 										}

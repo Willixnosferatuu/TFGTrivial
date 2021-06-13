@@ -1,6 +1,11 @@
 <div>
 	<div> 
 		<br/>
+		<p id="partidaCode"></p>
+		<br/>
+	</div>
+	<div> 
+		<br/>
 		<button onclick="tirarDau()" class="mainButtons" id="dauTorns">Llençar dau</button>
 	</div>
 	<div id="contentPartidaFile">

@@ -1,6 +1,7 @@
 var idPartida;
 var idPlayer;
 var puntuacions;
+var code;
 
 function testPostClick()
 {
@@ -154,6 +155,34 @@ function partidaCreada(response)
 	console.log("idPlayer: " + idPlayer + "\n");
 }
 
+function partidaPrivadaCreada(response)
+{
+	idPartida = response.idPartida;
+	idPlayer = response.idPlayer;
+	code = response.code;
+	console.log("idPartida: " + idPartida + "\n");
+	console.log("idPlayer: " + idPlayer + "\n");
+	console.log("code: " + code + "\n");
+	$.ajax(
+	{
+		type:"Post",
+		url: "play",
+		cache: false,
+		data:{},
+		success: function(response)
+		{
+			document.getElementById("mnuButtons").style.display="none";
+    		$("#content").html(response);
+    		document.getElementById("partidaCode").innerHTML = code;
+  			//document.getElementById("btnStart").disabled = false;
+  		},
+  		error: function(xhr)
+  		{
+  			console.log("error");
+  		}
+	});
+}
+
 function createGameShowForm()
 {
 	$.ajax(
@@ -163,7 +192,6 @@ function createGameShowForm()
 		success: function(response)
 		{
     		$("#content").html(response);
-    		console.log(response);
   		},
   		error: function(xhr)
   		{
@@ -181,7 +209,6 @@ function joinGameShowForm()
 		success: function(response)
 		{
     		$("#content").html(response);
-    		console.log(response);
   		},
   		error: function(xhr)
   		{
@@ -192,26 +219,33 @@ function joinGameShowForm()
 
 function createGame()
 {
+	var difficulty = document.getElementById("createGameForm").elements["diff"].value;
+	var mp = document.getElementById("createGameForm").elements["maxPlayers"].value;
 	console.log("DENTRO CREATE GAME");
-	/*var msg = {
-	    method: "createGame",
+	var msg = {
+	    method: "createPrivateGame",
 	    data: "TEST",
 	    id:   1,
-	    date: Date.now()
+	    date: Date.now(),
+	    difficulty: difficulty,
+	    maxPlayers: mp
   	};
-  	sockSend(msg);*/
+  	sockSend(msg);
 }
 
 function joinGame()
 {
 	console.log("DENTRO JOIN GAME");
-	/*var msg = {
-	    method: "joinGame",
-	    data: "TEST",
+	var code = document.getElementById("joinGameForm").elements["gameCode"].value;
+	var msg = {
+	    method: "joinPrivateGame",
+	    data: "",
 	    id:   1,
-	    date: Date.now()
+	    date: Date.now(),
+	    code: code
   	};
-  	sockSend(msg);*/
+
+  	sockSend(msg);
 }
 
 function tirarDau()

@@ -75,7 +75,7 @@
                     $userTrivial = new User($this->i, $user->id);
                     $this->userIdSocketId[$userTrivial->getId()] = $user->id;
                     $partida = new Partida($userTrivial, $maxPlayers, $diff);
-                    $partida->setPrivate();
+                    $partida->setPrivada();
                     $idPartida = $partida->getId();
                     $partidas[$idPartida] = $partida;
                     $res = array('idPartida' => $idPartida, 'idPlayer' => $userTrivial->getId(), 'code' => $partida->code);
@@ -85,22 +85,36 @@
                 case 'joinPrivateGame':
                     //TOOOOOOOOOOOODOOOOOOOOOOOOOOOOOOOOOOOO
                     $code = $obj->{'code'};
+                    $joined = false;
+                    var_dump($code);
                     $this->i = $this->i+1;
                     $userTrivial = new User($this->i, $user->id);
                     $this->userIdSocketId[$userTrivial->getId()] = $user->id;
-                    foreach ($partidas as $partida) 
+                    if (!empty($partidas)) 
                     {
-                        if ($partida->isPrivada() && $partida->code==$code && $partida->hasFreeSlot()) 
+                        foreach ($partidas as $partida) 
                         {
-                            $partida->addUser($userTrivial);
-                            $idPartida = $partida->getId();
-                            $joined = true;
-                            break;
+                            if ($partida->isPrivada() && $partida->code==$code && $partida->hasFreeSlot()) 
+                            {
+                                $partida->addUser($userTrivial);
+                                $idPartida = $partida->getId();
+                                $joined = true;
+                                break;
+                            }
                         }
                     }
-                    $res = array('idPartida' => $idPartida, 'idPlayer' => $userTrivial->getId(), 'code' => $partida->code);
-                    $jsonResponse = array('status' => 'ok', 'res' => $res, 'method' => $method);
-                    $this->send($user,json_encode($jsonResponse));
+                    if($joined)
+                    {
+                        $res = array('idPartida' => $idPartida, 'idPlayer' => $userTrivial->getId(), 'code' => $partida->code);
+                        $jsonResponse = array('status' => 'ok', 'res' => $res, 'method' => 'createPrivateGame');
+                        $this->send($user,json_encode($jsonResponse));
+                    }
+                    else
+                    {
+                        $res = array('ErrMsg' => "Unable to find game or it is full");
+                        $jsonResponse = array('status' => 'ok', 'res' => $res, 'method' => 'Err');
+                        $this->send($user,json_encode($jsonResponse));
+                    }                
                     break;
                 case 'determinarTorn':
                     echo "Determinar ORDEN " .$msg. "\n";
