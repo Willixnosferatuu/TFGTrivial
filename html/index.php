@@ -45,6 +45,9 @@ if (!isset($_GET["url"]))
 			case "joinGame":
 				require "view/joinGame_view.php";
 				break;
+			/*case "loginValidate":
+				require "controller/login_controller.php";
+				break;*/
 			//case "user":
 				//$action= $url[1];
 				//switch($action){

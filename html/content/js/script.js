@@ -63,8 +63,28 @@ function gotoLogin()
   			console.log("error");
   		}
 	});
-
 }
+
+/*function loginValidate()
+{
+	var user = document.getElementById("loginForm").elements["username"].value;
+	var password = document.getElementById("loginForm").elements["password"].value;
+	$.ajax(
+	{
+		type:"Post",
+		url: "loginValidate",
+		cache: false,
+		data: {username: user, password: password},
+		success: function(response)
+		{
+    		console.log(response);
+  		},
+  		error: function(xhr, exception)
+  		{
+  			console.log("error");
+  		}
+	});
+}*/
 
 function Logout()
 {

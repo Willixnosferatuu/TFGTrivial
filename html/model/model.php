@@ -126,7 +126,7 @@
 	function registerUser($username, $password)
 	{
 		$connection = connectDB();
-		$pass = mysqli_real_escape_string($connection,password_hash($password, PASSWORD_DEFAULT));
+		$pass = password_hash($password, PASSWORD_DEFAULT);
 		$user = mysqli_real_escape_string($connection, $username);
 
 		$sql = "SELECT username FROM User WHERE username='".$user."'";
@@ -150,20 +150,22 @@
 
 	function loginUser($username, $password)
 	{
-		$user = mysqli_real_escape_string($connection, $username); 
-		$pass = mysqli_real_escape_string($connection, password_hash($password, PASSWORD_DEFAULT));
 		$connection = connectDB();
-		$sql = "SELECT id, password FROM User WHERE username = '".$user."' AND password = '".$pass."'";
+		//$user = mysqli_real_escape_string($connection, $username); 
+		//$pass = mysqli_real_escape_string($connection, password_hash($password, PASSWORD_DEFAULT));
+		
+		//$sql = "SELECT id, password FROM User WHERE username = '".$user."' AND password = '".$pass."'";
+		$sql = "SELECT id, password FROM User WHERE username = '".$username."'";
 		$result = mysqli_query($connection, $sql);
 		$res = $result->fetch_assoc();
 		$idPlayer = $res["id"];
 		$contra = $res["password"];
-		if ($result != FALSE and mysqli_num_rows($result) == 1 and password_verify($pass, $contra))
+		if ($result != FALSE and mysqli_num_rows($result) == 1 and password_verify($password, $contra))
         {
-            return $idPlayer;
+            return TRUE;
         }else
         {
-        	return -1;
+        	return FALSE;
         }
 	}	
 
