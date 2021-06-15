@@ -14,12 +14,12 @@
 		return $tests;
 	}
 
-	function createGame($maxPlayers, $difficulty)
+	function createGame($maxPlayers, $difficulty, $maxRondas)
 	{
 		$connection = connectDB();
 		$code = getRandomString();
 		$status = "created";
-		$sql = "INSERT INTO Game(code,maxPlayers, difficulty, status, private) VALUES ('".$code."', '".$maxPlayers."', '".$difficulty."', '".$status."', false)";
+		$sql = "INSERT INTO Game(code,maxPlayers, difficulty, status, private, maxRondas) VALUES ('".$code."', '".$maxPlayers."', '".$difficulty."', '".$status."', false, '".$maxRondas."')";
 		if($connection->query($sql)==TRUE)
 		{
 			return array($code, $connection->insert_id);
@@ -28,6 +28,97 @@
 		{ 
 			return '-1';
 		}
+	}
+
+	function retrieveGame($id)
+	{
+		$connection = connectDB();
+		$sql = "SELECT * FROM Game WHERE id = '".$id."'";
+		$result = mysqli_query($connection, $sql);
+		$res = $result->fetch_assoc();
+		$code = $res["code"];
+		$maxPlayers = $res["maxPlayers"];
+		$difficulty = $res["difficulty"];
+		$status = $res["status"];
+		$private = $res["private"];
+		$maxRondas = $res["maxRondas"];
+		return array($code, $maxPlayers, $difficulty, $status, $private, $maxRondas);
+	}
+
+	function hasTurn($idGame, $idUser)
+	{
+		$connection = connectDB();
+		$sql = "SELECT hasTurn FROM User_Game WHERE idGame = ".$idGame." AND idUser = ".$idUser."";
+		$result = mysqli_query($connection, $sql);
+		$res = $result->fetch_assoc();
+		return $res["hasTurn"];
+	}
+
+	function orderedUsersFromBD($idGame)
+	{
+		$connection = connectDB();
+		$users = array();
+		$sql = "SELECT idUser FROM User_Game WHERE idGame = ".$idGame." ORDER BY turn";
+		$result = $connection->query($sql);
+		while($row = $result->fetch_assoc())
+		{
+			$users[] = $row["idUser"];
+		} 
+		return $users;
+	}
+
+	function getUsernameById($idPlayer)
+	{
+		$connection = connectDB();
+		$sql = "SELECT username FROM User WHERE id = ".$idPlayer;
+		$result = mysqli_query($connection, $sql);
+		$res = $result->fetch_assoc();
+		return $res["username"];
+	}
+
+	function updateMaxRondasDB($idGame)
+	{
+		$connection = connectDB();
+		$sql = "SELECT maxRondas FROM Game WHERE id = ".$idGame;
+		$result = mysqli_query($connection, $sql);
+		$res = $result->fetch_assoc();
+		$oldMaxRondas = $res["maxRondas"];
+		$newMaxRondas = $oldMaxRondas-1;
+		$sql = "UPDATE Game SET maxRondas = '".$newMaxRondas."' WHERE id = '".$idGame."'";
+		if($connection->query($sql)==TRUE)
+		{
+			return $newMaxRondas;
+		}
+		else 
+		{ 
+			return false;
+		}
+	}
+
+	function getUserPointsFromDB($idGame)
+	{
+		$connection = connectDB();
+		$users = array();
+		$sql = "SELECT U.username, UG.gamePoints FROM User_Game UG INNER JOIN User U ON UG.idUser = U.id WHERE UG.idGame = ".$idGame;
+		$result = $connection->query($sql);
+		while($row = $result->fetch_assoc())
+		{
+			$users[$row["username"]] = $row["gamePoints"];
+		} 
+		return $users;
+	}
+
+	function retrievePendingGame($idPlayer)
+	{
+		$connection = connectDB();
+		$pendingGames = array();
+		$sql = "SELECT id FROM Game INNER JOIN User_Game ON Game.id=User_Game.idGame WHERE User_Game.idUser = '".$idPlayer."' AND Game.status ='active'";
+		$result = $connection->query($sql);
+		while($row = $result->fetch_assoc())
+		{
+			$pendingGames[] = $row;
+		} 
+		return $pendingGames;
 	}
 
 	function insertUserGame($idUser, $idGame)

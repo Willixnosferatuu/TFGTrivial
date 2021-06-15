@@ -2,6 +2,7 @@ var idPartida;
 var idPlayer;
 var puntuacions;
 var code;
+var username;
 
 function testPostClick()
 {
@@ -79,7 +80,19 @@ function loginValidate()
 		{
 			//TOOOOOOOOOOOOOOOOOOODDOOOOOOOOOOOOOOOOOOOOOOO
     		console.log(response);
-  		},
+    		idPlayer = response;
+    		username = user;
+    		document.getElementById("mnuButtons").style.display="unset";
+    		document.getElementById("mnuLogButtons").style.display="none";
+    		$("#content").html("");
+    		var msg = {
+			    method: "partidasPending",
+			    data: "",
+			    idPlayer: idPlayer,
+			    date: Date.now()
+				};
+			sockSend(msg);
+		},
   		error: function(xhr, exception)
   		{
   			console.log("error");
@@ -87,9 +100,37 @@ function loginValidate()
 	});
 }
 
+function showPartidasPending(result)
+{
+	var builder = "<p>Partidas Pendents</p><ul>";
+	for (var i = result.length - 1; i >= 0; i--) 
+	{
+		if (result[i].torn==1) 
+		{
+			builder = builder + "<li><Button onClick='retomarPartida(" + result[i].id + ")'> Partida: " + result[i].id + " // Et Toca Jugar!</Button></li></br>";
+		}
+		else
+		{
+			builder = builder + "<li><Button onClick='retomarPartida(" + result[i].id + ")' disabled> Partida: " + result[i].id + "</Button></li></br>";
+		}
+		
+	}
+	builder = builder + "</ul> ";
+	$("#content").html(builder);
+	console.log(result);
+}
+
+function retomarPartida(idGame)
+{
+	idPartida = idGame;
+	restorePartida();
+}
+
 function Logout()
 {
-	$.ajax(
+	console.log("Logout");
+	//window.location.href = "index.php";
+	/*$.ajax(
 	{
 		url: "logout",
 		cache: false,
@@ -102,7 +143,7 @@ function Logout()
   		{
   			console.log("error");
   		}
-	});
+	});*/
 }
 
 /*function createGame()
@@ -144,7 +185,7 @@ function play()
 	var msg = {
 	    method: "jugar",
 	    data: "TEST",
-	    id:   1,
+	    idPlayer:   idPlayer,
 	    date: Date.now()
   	};
 
@@ -246,7 +287,7 @@ function createGame()
 	var msg = {
 	    method: "createPrivateGame",
 	    data: "TEST",
-	    id:   1,
+	    idPlayer: idPlayer,
 	    date: Date.now(),
 	    difficulty: difficulty,
 	    maxPlayers: mp
@@ -261,7 +302,7 @@ function joinGame()
 	var msg = {
 	    method: "joinPrivateGame",
 	    data: "",
-	    id:   1,
+	    idPlayer: idPlayer,
 	    date: Date.now(),
 	    code: code
   	};
@@ -302,7 +343,7 @@ function determinarTorn(numeroDau)
 	var msg = {
 	    method: "determinarTorn",
 	    data: numeroDau,
-	    idPlayer:   idPlayer,
+	    idPlayer: idPlayer,
 	    idPartida: idPartida,
 	    date: Date.now()
   	};
@@ -359,11 +400,25 @@ function startPartida()
 	var msg = {
 	    method: "startPartida",
 	    data: "test",
-	    idPartida:   idPartida,
+	    idPartida: idPartida,
 	    idPlayer: idPlayer,
 	    date: Date.now()
   	};
   	console.log("Partida Començada");
+	sockSend(msg);
+}
+
+function restorePartida()
+{
+	console.log("Entra restorePartida()");
+	console.log(idPartida);
+	var msg = {
+	    method: "restorePartida",
+	    data: "test",
+	    idPartida: idPartida,
+	    idPlayer: idPlayer,
+	    date: Date.now()
+  	};
 	sockSend(msg);
 }
 
@@ -402,11 +457,11 @@ function goToTauler(result)
 			success: function(response)
 			{
 	    		$("#content").html(response);
-	    		$('#jugador').html("<p>Jugador " + idPlayer + "</p>");
+	    		$('#jugador').html("<p>Jugador -> " + username + "</p>");
 	    		updatePuntuacions();
 	    		if (primerTorn!=0) 
 	    		{
-	    			$('#primerTorn').html("Espera! Es el torn del jugador " + primerTorn);
+	    			$('#primerTorn').html("Espera! Es el torn de  " + primerTorn);
 	    			document.getElementById("btnDau").disabled = true;
 	    		}
 	    		else
@@ -433,14 +488,14 @@ function goToTauler(result)
 			if (puntuacions[p]>maxPoints) {maxPoints=puntuacions[p]; winner = p;}
 			if (p==idPlayer) 
 			{
-				puntuacionsTag = puntuacionsTag + "<p style='color: aqua'>Jugador " + p + ": " + puntuacions[p] + "</p>";
+				puntuacionsTag = puntuacionsTag + "<p style='color: aqua'>" + p + ": " + puntuacions[p] + "</p>";
 			}
 			else
 			{
-				puntuacionsTag = puntuacionsTag + "<p>Jugador " + p + ": " + puntuacions[p] + "</p>";
+				puntuacionsTag = puntuacionsTag + "<p>" + p + ": " + puntuacions[p] + "</p>";
 			}	
 		}
-		$("#content").html("<p>FI PARTIDA</p>" + puntuacionsTag + "<h2>And the winner is : " + winner + "</h2>");
+		$("#content").html("<p>FI PARTIDA</p>" + puntuacionsTag + "<h2>And the winner is : " + winner + "</h2> </br><Button href='index.php'>Home</Button>");
 	}	
 }
 
@@ -451,11 +506,11 @@ function updatePuntuacions()
 	{
 		if (p==idPlayer) 
 		{
-			puntuacionsTag = puntuacionsTag + "<p style='color: aqua'>Jugador " + p + " : " + puntuacions[p] + "</p>";
+			puntuacionsTag = puntuacionsTag + "<p style='color: aqua'>" + p + " : " + puntuacions[p] + "</p>";
 		}
 		else
 		{
-			puntuacionsTag = puntuacionsTag + "<p>Jugador " + p + " : " + puntuacions[p] + "</p>";
+			puntuacionsTag = puntuacionsTag + "<p>" + p + " : " + puntuacions[p] + "</p>";
 		}		
 	}
 	$('#puntuacions').html(puntuacionsTag);

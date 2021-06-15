@@ -11,10 +11,7 @@
 	</head>
 	<header class="header">
 		<!--<?php $session_value=(isset($_SESSION['User']))?$_SESSION['User']:''; ?>-->
-		<h1>Triviia willax</h1>
-		<button onclick="gotoRegister()" id="btnRegister" class="">Register</button>
-		<button onclick="gotoLogin()" id="btnLogin" class="">Login</button>
-		<button onclick="Logout()" id="btnLogout" style="visibility: hidden;">Logout</button>
+		<h1>Triviia willax</h1>		
 	</header>
 	<body onload="init()">
 		<div class="main">
@@ -22,7 +19,12 @@
 			<br/>
 			<hr/>
 			<br/>
-			<div class="buttons" id="mnuButtons">
+			<div class="buttons" id="mnuLogButtons">
+				<button onclick="gotoRegister()" id="btnRegister" class="">Register</button>
+				<button onclick="gotoLogin()" id="btnLogin" class="">Login</button>
+				<button onclick="Logout()" id="btnLogout" style="visibility: hidden;">Logout</button>
+			</div>
+			<div class="buttons" id="mnuButtons" style="display: none;">
 				<!--<button onclick="testPostClick()" class="mainButtons">TEST</button>-->
 				<button onclick="joinGameShowForm()" class="mainButtons">Unirse</button>
 				<button onclick="play()" class="mainButtons">Jugar</button>

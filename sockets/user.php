@@ -6,10 +6,12 @@ class User
   private $id;
   private $socketId;
   private $points;
+  private $username;
 
   function __construct($id, $socketId) 
   {
     $this->id = $id;
+    $this->username = getUserNameByID($id);
     $this->socketId = $socketId;
     $this->points = 0;
   }
@@ -17,6 +19,11 @@ class User
   public function getId()
   {
     return $this->id;
+  }
+
+  public function getUsername()
+  {
+    return $this->username;
   }
 
   public function getSocketId()
@@ -34,6 +41,11 @@ class User
   public function getPoints()
   {
     return $this->points;
+  }
+
+  public function hasTurn($idGame)
+  {
+    return hasTurn($idGame, $this->id);
   }
 }
 ?>

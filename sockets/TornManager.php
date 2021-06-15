@@ -4,6 +4,7 @@
     class TornManager
     {
     	public $DauUsuari = array();
+        public $orderedUsers = array();
     	public $torn;
         private $maxRondas = 2;
         private $idPartida;
@@ -27,27 +28,72 @@
         	return json_encode($this->DauUsuari);
         }
 
+        public function getOrderedUsers()
+        {
+            $this->orderedUsers = orderedUsersFromBD($this->idPartida);
+            return $this->orderedUsers;
+        }
+
         public function Next()
         {
-            $idPastUser = array_keys($this->DauUsuari)[$this->torn];
-            roundTorn($this->idPartida, $idPastUser, 0);
-        	if ($this->torn < count($this->DauUsuari)-1) 
-        	{
-        		$this->torn = $this->torn+1;
-                $idNextUser = array_keys($this->DauUsuari)[$this->torn];
-        	}
-        	elseif ($this->torn == count($this->DauUsuari)-1) 
-        	{
-        		$this->torn = 0;
-                $idNextUser = array_keys($this->DauUsuari)[$this->torn];
-                $this->maxRondas = $this->maxRondas-1;
-                if ($this->maxRondas==0) 
+            if ($this->DauUsuari) 
+            {
+                $idPastUser = array_keys($this->DauUsuari)[$this->torn];
+                roundTorn($this->idPartida, $idPastUser, 0);
+                if ($this->torn < count($this->DauUsuari)-1) 
                 {
-                    return "fiPartida";
+                    $this->torn = $this->torn+1;
+                    $idNextUser = array_keys($this->DauUsuari)[$this->torn];
                 }
-        	}
-            roundTorn($this->idPartida, $idNextUser, 1);
-        	return array_keys($this->DauUsuari)[$this->torn];
+                elseif ($this->torn == count($this->DauUsuari)-1) 
+                {
+                    $this->torn = 0;
+                    $idNextUser = array_keys($this->DauUsuari)[$this->torn];
+                    $this->maxRondas = $this->maxRondas-1;
+                    if ($this->maxRondas==0) 
+                    {
+                        return "fiPartida";
+                    }
+                }
+                roundTorn($this->idPartida, $idNextUser, 1);
+                return array_keys($this->DauUsuari)[$this->torn];
+            }
+            else
+            {
+                foreach($this->orderedUsers as $u)
+                {
+                    $userTrivial = new User($u, 0);
+                    if($userTrivial->hasTurn($this->idPartida))
+                    {
+                        $idPastUser = $userTrivial->getId();
+                        echo "PastUser = " .$idPastUser;
+                        break;
+                    }
+                }
+                roundTorn($this->idPartida, $idPastUser, 0);
+                $key = array_search($idPastUser, $this->orderedUsers);
+                var_dump($this->orderedUsers);
+                echo "KEY = " .$key; 
+                if ($key+1 < count($this->orderedUsers)) 
+                {
+                    $idNextUser = $this->orderedUsers[$key+1];
+                }
+                elseif ($key+1 == count($this->orderedUsers)) 
+                {
+                    $key = 0;
+                    $idNextUser = $this->orderedUsers[$key];
+                    $this->maxRondas = updateMaxRondasDB($this->idPartida);
+                    if ($this->maxRondas==0) 
+                    {
+                        return "fiPartida";
+                    }
+                }
+                echo "NextUser = " .$idPastUser;
+                roundTorn($this->idPartida, $idNextUser, 1);
+                return $idNextUser;
+            }
+            
+            
         }
     }
 ?>

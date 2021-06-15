@@ -3,16 +3,15 @@
     require_once('websockets.php');
     require_once('partida.php');
     require_once('user.php');
+    require_once('ManagerPartidas.php');
     
     class TrivialServer extends WebSocketServer
     {
         public $partidas = array();
-        private $i=0;
         private $userIdSocketId = array();
 
         protected function process ($user, $message) 
         {
-            global $i;
             global $partidas;
             $obj = json_decode($message);
             $method = $obj->{'method'};
@@ -21,7 +20,7 @@
             $idPartida = $obj->{'idPartida'};
             $date = $obj->{'date'};
 
-            var_dump($_SESSION["User"]);
+            //var_dump($_SESSION["User"]);
 
             echo ' method: '.$method;
             echo ' data: '.$msg;
@@ -35,8 +34,7 @@
                     $difficulty = "medium";
                     $maxPlayers = 2;
                     $joined = false;
-                    $this->i = $this->i+1;
-                    $userTrivial = new User($this->i, $user->id);
+                    $userTrivial = new User($idPlayer, $user->id);
                     $this->userIdSocketId[$userTrivial->getId()] = $user->id;
                     if (!empty($partidas)) 
                     {
@@ -52,14 +50,16 @@
                         }
                         if (!$joined) 
                         {
-                            $partida = new Partida($userTrivial, $maxPlayers, $difficulty);
+                            $partida = new Partida();
+                            $partida->Create($userTrivial, $maxPlayers, $difficulty);
                             $idPartida = $partida->getId();
                             $partidas[$idPartida] = $partida;  
                         }                                        
                     }
                     else
                     {
-                        $partida = new Partida($userTrivial, $maxPlayers, $difficulty);
+                        $partida = new Partida();
+                        $partida->Create($userTrivial, $maxPlayers, $difficulty);
                         $idPartida = $partida->getId();
                         $partidas[$idPartida] = $partida;  
                     }
@@ -71,10 +71,10 @@
                     //TOOOOOOOOOOOODOOOOOOOOOOOOOOOOOOOOOOOO
                     $diff = $obj->{'difficulty'};
                     $maxPlayers = $obj->{'maxPlayers'};
-                    $this->i = $this->i+1;
-                    $userTrivial = new User($this->i, $user->id);
+                    $userTrivial = new User($idPlayer, $user->id);
                     $this->userIdSocketId[$userTrivial->getId()] = $user->id;
-                    $partida = new Partida($userTrivial, $maxPlayers, $diff);
+                    $partida = new Partida();
+                    $partida->Create($userTrivial, $maxPlayers, $difficulty);
                     $partida->setPrivada();
                     $idPartida = $partida->getId();
                     $partidas[$idPartida] = $partida;
@@ -87,8 +87,7 @@
                     $code = $obj->{'code'};
                     $joined = false;
                     var_dump($code);
-                    $this->i = $this->i+1;
-                    $userTrivial = new User($this->i, $user->id);
+                    $userTrivial = new User($idPlayer, $user->id);
                     $this->userIdSocketId[$userTrivial->getId()] = $user->id;
                     if (!empty($partidas)) 
                     {
@@ -144,6 +143,8 @@
                 case 'startPartida':
                     $partidas[$idPartida]->StartPartida();
                     $primerJugador = array_keys($partidas[$idPartida]->tornManager->DauUsuari)[0];
+                    $manager = new ManagerPartidas();
+                    $primerJugadorUsername = $manager->getUsernameById($primerJugador);
                     foreach ($this->users as $currentUser) 
                     {
                         if (in_array($currentUser->id, $partidas[$idPartida]->getUsersSockets())) 
@@ -156,12 +157,38 @@
                             }
                             else
                             {
-                                $res = array('primerTorn' => $primerJugador, 'puntuacions' => $partidas[$idPartida]->getUsersAndPoints());
+                                $res = array('primerTorn' => $primerJugadorUsername, 'puntuacions' => $partidas[$idPartida]->getUsersAndPoints());
                                 $jsonResponse = array('status' => 'ok', 'method' => 'goToTauler', 'res'=>$res);                        
                                 $this->send($currentUser,json_encode($jsonResponse));
                             } 
                         }  
                     }
+                    break; 
+                case 'restorePartida':
+                    $orderJugadors = $partidas[$idPartida]->tornManager->getOrderedUsers();
+                    var_dump($orderJugadors);
+                    foreach($orderJugadors as $u)
+                    {
+                        $userTrivial = new User($idPlayer, $user->id);
+                        if($userTrivial->hasTurn($idPartida))
+                        {
+                            $primerJugador = $userTrivial->getId();
+                            break;
+                        }
+                    }          
+                    $manager = new ManagerPartidas();
+                    $primerJugadorUsername = $manager->getUsernameById($primerJugador);
+                    if ($primerJugador===$idPlayer) 
+                    {
+                        $res = array('primerTorn' => '0', 'puntuacions' => $partidas[$idPartida]->getUsersAndPoints());
+                        
+                    }
+                    else
+                    {
+                        $res = array('primerTorn' => $primerJugadorUsername, 'puntuacions' => $partidas[$idPartida]->getUsersAndPoints());
+                    }
+                    $jsonResponse = array('status' => 'ok', 'method' => 'goToTauler', 'res'=>$res);                        
+                    $this->send($user,json_encode($jsonResponse));         
                     break; 
                 case 'pregunta':
                     $pregunta = $partidas[$idPartida]->addPregunta($msg);
@@ -180,28 +207,41 @@
                     $nextPlayer = $partidas[$idPartida]->nextTorn(); 
                     echo "nextPlayer = " .$nextPlayer; 
                     if ($nextPlayer != "fiPartida") 
-                    {                        
-                        foreach ($this->users as $currentUser) 
+                    {         
+                        $manager = new ManagerPartidas();
+                        $nextJugadorUsername = $manager->getUsernameById($nextPlayer);
+                        if ($partidas[$idPartida]->getUsersSockets()) 
                         {
-                            if (in_array($currentUser->id, $partidas[$idPartida]->getUsersSockets())) 
-                            {                            
-                                if($currentUser->id == $this->userIdSocketId[$nextPlayer])
-                                {
-                                    $res = array('primerTorn' => '0', 'puntuacions' => $partidas[$idPartida]->getUsersAndPoints());
-                                    $jsonResponse = array('status' => 'ok', 'method' => 'goToTauler', 'res' => $res);
-                                    $this->send($currentUser,json_encode($jsonResponse));
+                            foreach ($this->users as $currentUser) 
+                            {
+                                if (in_array($currentUser->id, $partidas[$idPartida]->getUsersSockets())) 
+                                {                            
+                                    if($currentUser->id == $this->userIdSocketId[$nextPlayer])
+                                    {
+                                        $res = array('primerTorn' => '0', 'puntuacions' => $partidas[$idPartida]->getUsersAndPoints());
+                                        $jsonResponse = array('status' => 'ok', 'method' => 'goToTauler', 'res' => $res);
+                                        $this->send($currentUser,json_encode($jsonResponse));
+                                    }
+                                    else
+                                    {
+                                        $res = array('primerTorn' => $nextJugadorUsername, 'puntuacions' => $partidas[$idPartida]->getUsersAndPoints());
+                                        $jsonResponse = array('status' => 'ok', 'method' => 'goToTauler', 'res' => $res); // METHOD NEXTTORN ???
+                                        $this->send($currentUser,json_encode($jsonResponse));
+                                    }
                                 }
-                                else
-                                {
-                                    $res = array('primerTorn' => $nextPlayer, 'puntuacions' => $partidas[$idPartida]->getUsersAndPoints());
-                                    $jsonResponse = array('status' => 'ok', 'method' => 'goToTauler', 'res' => $res); // METHOD NEXTTORN ???
-                                    $this->send($currentUser,json_encode($jsonResponse));
-                                }
-                            }
-                        } 
+                            } 
+                        }  
+                        else
+                        {
+                            $res = array('primerTorn' => $nextJugadorUsername, 'puntuacions' => $partidas[$idPartida]->getUsersAndPoints());
+                            $jsonResponse = array('status' => 'ok', 'method' => 'goToTauler', 'res' => $res); // METHOD NEXTTORN ???
+                            $this->send($user,json_encode($jsonResponse));
+                        }             
+                        
                     }
                     else
                     {
+                        //TODO: AÑADIR PUNTOS TOTALES A USER
                         $partidas[$idPartida]->TerminatePartida();
                         foreach ($this->users as $currentUser) 
                         {
@@ -214,6 +254,23 @@
                         }
                     }
                     break;
+                case "partidasPending":
+                    $manager = new ManagerPartidas();
+                    $partidasRes = array();
+                    $userTrivial = new User($idPlayer, $user->id);
+                    $this->userIdSocketId[$userTrivial->getId()] = $user->id;
+                    $arrPartidas = $manager->RetrievePending($idPlayer);
+                    foreach($arrPartidas as $p)
+                    {
+                        $partidas[$p->getId()] = $p;
+                        $partidasRes[] = array('id' => $p->getId(), 'torn' => $userTrivial->hasTurn($p->getId()));
+                    }
+                    var_dump($partidasRes);
+                    $res = $partidasRes;
+                    $jsonResponse = array('status' => 'ok', 'method' => 'retrieve', 'res' => $res);
+                    $this->send($user,json_encode($jsonResponse));
+                    break;
+
                 default:
                     # code...
                     break;

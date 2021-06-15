@@ -37,6 +37,9 @@ function init()
 										case "createPrivateGame":
 											partidaPrivadaCreada(res.res);
 											break;
+										case "retrieve":
+											showPartidasPending(res.res);
+											break;
 										case "Err":
 											console.log(res.res);
 											break;
