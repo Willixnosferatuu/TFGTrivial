@@ -26,7 +26,6 @@
         {
             $this->maxPlayers = $maxPlayers;
             $this->difficulty = $difficulty;
-            echo "DIFFICULTY ON CREATE GAME = " .$difficulty;
             $this->state = "created";//hi habia 1 bgada un tornmanager k tukaba molt els collons i un dia bach agafat una butlla de vichi ktalan i li bach rebemntart el cairo_pattern_create_radial(x0, y0, r0, x1, y1, r1)
             $this->preguntes = array();
             $res = createGame($this->maxPlayers, $this->difficulty, $this->maxRondas);
@@ -178,17 +177,9 @@
             return $nextPlayer;
         }
 
-        private function updatePartidaBDstatus($idPartida, $status)
-        {
-            //TODO
-            //update partida into BD
-        }
-
         private function addUserPartidaBD($idUser, $idPartida)
         {
-            //TODO
             insertUserGame($idUser, $idPartida);
-            //insert user partida into BD
         }    
 
         private function setStateBD($state)

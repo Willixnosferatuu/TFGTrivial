@@ -20,6 +20,16 @@
 		{
 			return getUserNameByID($idPlayer);
 		}
+
+		public function addPuntsTotalsUsers($puntuacions)
+		{
+			foreach($puntuacions as $key => $value)
+			{
+				echo "USER => ".$key;
+				echo "Points => " .$value;
+				addTotalPointsUserBD($key, $value);
+			}
+		}
 	}
 
 ?>

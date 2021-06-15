@@ -76,6 +76,15 @@
 		return $res["username"];
 	}
 
+	function getTotalScoreById($idPlayer)
+	{
+		$connection = connectDB();
+		$sql = "SELECT totalScore FROM User WHERE id = ".$idPlayer;
+		$result = mysqli_query($connection, $sql);
+		$res = $result->fetch_assoc();
+		return $res["totalScore"];
+	}
+
 	function updateMaxRondasDB($idGame)
 	{
 		$connection = connectDB();
@@ -138,6 +147,7 @@
 	function updateGameStatus($idGame, $status)
 	{
 		$connection = connectDB();
+		echo "\n GAME STATUS UPDATED TO " .$status. "\n"; 
 		$sql = "UPDATE Game SET status = '".$status."' WHERE id = '".$idGame."'";
 		if($connection->query($sql)==TRUE)
 		{
@@ -193,9 +203,23 @@
 	{
 		$connection = connectDB();
 		$sql = "SELECT gamePoints FROM User_Game WHERE idGame = ".$idGame." AND idUser = ".$idUser."";
-		$oldPoints = $connection->query($sql);
+		$result = mysqli_query($connection, $sql);
+		$res = $result->fetch_assoc();
+		$oldPoints = $res["gamePoints"];
 		$newPoints = $oldPoints + $points;
 		$sql = "UPDATE User_Game SET gamePoints=".$newPoints." WHERE idGame = ".$idGame." AND idUser = ".$idUser."";
+		$connection->query($sql);
+	}
+
+	function addTotalPointsUserBD($username, $points)
+	{
+		$connection = connectDB();
+		$sql = "SELECT totalScore FROM User WHERE username = '".$username."'";
+		$result = mysqli_query($connection, $sql);
+		$res = $result->fetch_assoc();
+		$oldPoints = $res["totalScore"];
+		$newPoints = $oldPoints + $points;
+		$sql = "UPDATE User SET totalScore=".$newPoints." WHERE username = '".$username."'";
 		$connection->query($sql);
 	}
 

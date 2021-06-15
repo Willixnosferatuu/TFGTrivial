@@ -41,7 +41,8 @@ function init()
 											showPartidasPending(res.res);
 											break;
 										case "Err":
-											console.log(res.res);
+											ShowErrorOnJoinGame(res.res.ErrMsg);
+											console.log(res.res.ErrMsg);
 											break;
 									  	default:								    
 										    break;

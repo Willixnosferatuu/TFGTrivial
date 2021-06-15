@@ -84,6 +84,7 @@ function loginValidate()
     		username = user;
     		document.getElementById("mnuButtons").style.display="unset";
     		document.getElementById("mnuLogButtons").style.display="none";
+    		document.getElementById("btnUser").innerText= "User: " +username;
     		$("#content").html("");
     		var msg = {
 			    method: "partidasPending",
@@ -310,6 +311,12 @@ function joinGame()
   	sockSend(msg);
 }
 
+function ShowErrorOnJoinGame(errMessage)
+{
+	document.getElementById("mnuButtons").style.display="unset";
+	$("#content").html("<p>" + errMessage + "</p>");
+}
+
 function tirarDau()
 {
 	console.log("Entra tirarDau()");
@@ -495,8 +502,14 @@ function goToTauler(result)
 				puntuacionsTag = puntuacionsTag + "<p>" + p + ": " + puntuacions[p] + "</p>";
 			}	
 		}
-		$("#content").html("<p>FI PARTIDA</p>" + puntuacionsTag + "<h2>And the winner is : " + winner + "</h2> </br><Button href='index.php'>Home</Button>");
+		$("#content").html("<p>FI PARTIDA</p>" + puntuacionsTag + "<h2>And the winner is : " + winner + "</h2> </br><Button onclick=backToHomeScreen()>Home</Button>");
 	}	
+}
+
+function backToHomeScreen()
+{
+	document.getElementById("mnuButtons").style.display="unset";
+	$("#content").html("");
 }
 
 function updatePuntuacions()
@@ -621,6 +634,25 @@ function nextTorn()
 	    date: Date.now()
   	};
 	sockSend(msg);
+}
+
+function showUserInfo()
+{
+	$.ajax(
+	{
+		type:"Post",
+		url: "userInfo",
+		cache: false,
+		data:{idPlayer: idPlayer},
+		success: function(response)
+		{
+    		$("#content").html(response);
+  		},
+  		error: function(xhr)
+  		{
+  			console.log("error");
+  		}
+	});
 }
 
 function initMenu()

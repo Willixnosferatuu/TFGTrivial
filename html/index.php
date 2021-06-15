@@ -48,6 +48,9 @@ if (!isset($_GET["url"]))
 			case "loginValidate":
 				require "controller/login_controller.php";
 				break;
+			case "userInfo":
+				require "controller/userInfo_controller.php";
+				break;
 			//case "user":
 				//$action= $url[1];
 				//switch($action){

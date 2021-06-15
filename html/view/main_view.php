@@ -28,7 +28,8 @@
 				<!--<button onclick="testPostClick()" class="mainButtons">TEST</button>-->
 				<button onclick="joinGameShowForm()" class="mainButtons">Unirse</button>
 				<button onclick="play()" class="mainButtons">Jugar</button>
-				<button onclick="createGameShowForm()" class="mainButtons">Crear Partida</button>	
+				<button onclick="createGameShowForm()" class="mainButtons">Crear Partida</button>
+				<button onclick="showUserInfo()" class="mainButtons" value="" id="btnUser"></button>	
 				<!--<p>Num. Jugadores: <input type="text" id="maxPlayers" name="maxPlayers"></p>-->		
 			</div>
 			<div id="content">

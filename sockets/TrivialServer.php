@@ -74,7 +74,7 @@
                     $userTrivial = new User($idPlayer, $user->id);
                     $this->userIdSocketId[$userTrivial->getId()] = $user->id;
                     $partida = new Partida();
-                    $partida->Create($userTrivial, $maxPlayers, $difficulty);
+                    $partida->Create($userTrivial, $maxPlayers, $diff);
                     $partida->setPrivada();
                     $idPartida = $partida->getId();
                     $partidas[$idPartida] = $partida;
@@ -241,16 +241,28 @@
                     }
                     else
                     {
-                        //TODO: AÑADIR PUNTOS TOTALES A USER
+                        $puntuacions = $partidas[$idPartida]->getUsersAndPoints();
+                        var_dump($puntuacions);
+                        $manager = new ManagerPartidas();
+                        $nextJugadorUsername = $manager->addPuntsTotalsUsers($puntuacions);
                         $partidas[$idPartida]->TerminatePartida();
-                        foreach ($this->users as $currentUser) 
+                        if ($partidas[$idPartida]->getUsersSockets()) 
                         {
-                            if (in_array($currentUser->id, $partidas[$idPartida]->getUsersSockets())) 
-                            {  
-                                $res = array('primerTorn' => 'fiPartida', 'puntuacions' => $partidas[$idPartida]->getUsersAndPoints());
-                                $jsonResponse = array('status' => 'ok', 'method' => 'goToTauler', 'res' => $res);
-                                $this->send($currentUser,json_encode($jsonResponse));
+                            foreach ($this->users as $currentUser) 
+                            {
+                                if (in_array($currentUser->id, $partidas[$idPartida]->getUsersSockets())) 
+                                {  
+                                    $res = array('primerTorn' => 'fiPartida', 'puntuacions' => $partidas[$idPartida]->getUsersAndPoints());
+                                    $jsonResponse = array('status' => 'ok', 'method' => 'goToTauler', 'res' => $res);
+                                    $this->send($currentUser,json_encode($jsonResponse));
+                                }
                             }
+                        }
+                        else
+                        {
+                            $res = array('primerTorn' => 'fiPartida', 'puntuacions' => $partidas[$idPartida]->getUsersAndPoints());
+                            $jsonResponse = array('status' => 'ok', 'method' => 'goToTauler', 'res' => $res); // METHOD NEXTTORN ???
+                            $this->send($user,json_encode($jsonResponse));
                         }
                     }
                     break;
