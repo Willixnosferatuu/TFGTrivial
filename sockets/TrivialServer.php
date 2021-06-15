@@ -22,10 +22,12 @@
 
             //var_dump($_SESSION["User"]);
 
-            echo ' method: '.$method;
-            echo ' data: '.$msg;
+            echo '--------------------------';
+            echo ' method: '.$method. "\n";
+            echo ' data: '.$msg. "\n";
             echo ' idPlayer: '.$idPlayer. "\n";
             echo ' idPartida: '.$idPartida. "\n";
+            echo '--------------------------';
             //echo ' date: '.$date;
 
             switch ($method) 
@@ -86,7 +88,6 @@
                     //TOOOOOOOOOOOODOOOOOOOOOOOOOOOOOOOOOOOO
                     $code = $obj->{'code'};
                     $joined = false;
-                    var_dump($code);
                     $userTrivial = new User($idPlayer, $user->id);
                     $this->userIdSocketId[$userTrivial->getId()] = $user->id;
                     if (!empty($partidas)) 
@@ -166,7 +167,6 @@
                     break; 
                 case 'restorePartida':
                     $orderJugadors = $partidas[$idPartida]->tornManager->getOrderedUsers();
-                    var_dump($orderJugadors);
                     foreach($orderJugadors as $u)
                     {
                         $userTrivial = new User($idPlayer, $user->id);
@@ -242,7 +242,6 @@
                     else
                     {
                         $puntuacions = $partidas[$idPartida]->getUsersAndPoints();
-                        var_dump($puntuacions);
                         $manager = new ManagerPartidas();
                         $nextJugadorUsername = $manager->addPuntsTotalsUsers($puntuacions);
                         $partidas[$idPartida]->TerminatePartida();
@@ -277,7 +276,6 @@
                         $partidas[$p->getId()] = $p;
                         $partidasRes[] = array('id' => $p->getId(), 'torn' => $userTrivial->hasTurn($p->getId()));
                     }
-                    var_dump($partidasRes);
                     $res = $partidasRes;
                     $jsonResponse = array('status' => 'ok', 'method' => 'retrieve', 'res' => $res);
                     $this->send($user,json_encode($jsonResponse));

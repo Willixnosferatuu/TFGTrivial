@@ -147,7 +147,6 @@
 	function updateGameStatus($idGame, $status)
 	{
 		$connection = connectDB();
-		echo "\n GAME STATUS UPDATED TO " .$status. "\n"; 
 		$sql = "UPDATE Game SET status = '".$status."' WHERE id = '".$idGame."'";
 		if($connection->query($sql)==TRUE)
 		{

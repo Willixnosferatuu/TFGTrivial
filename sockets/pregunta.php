@@ -45,7 +45,9 @@
 				$this->respostes = $obj->results[0]->incorrect_answers;
 				$this->respostes[] = $this->correcte;
 				shuffle($this->respostes);
+				echo "\nresposta correcte => ";
 				var_dump($this->correcte);
+				echo "\n";
 				return $this;
 			}        	
         	return -1;
