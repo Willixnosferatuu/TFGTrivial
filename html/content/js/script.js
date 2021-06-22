@@ -103,16 +103,16 @@ function loginValidate()
 
 function showPartidasPending(result)
 {
-	var builder = "<p>Partidas Pendents</p><ul>";
+	var builder = "<br/><p>Partides Pendents</p><ul>";
 	for (var i = result.length - 1; i >= 0; i--) 
 	{
 		if (result[i].torn==1) 
 		{
-			builder = builder + "<li><Button onClick='retomarPartida(" + result[i].id + ")'> Partida: " + result[i].id + " // Et Toca Jugar!</Button></li></br>";
+			builder = builder + "<li><Button class='btn btn-secondary' onClick='retomarPartida(" + result[i].id + ")'> Partida: " + result[i].id + " // Et Toca Jugar!</Button></li></br>";
 		}
 		else
 		{
-			builder = builder + "<li><Button onClick='retomarPartida(" + result[i].id + ")' disabled> Partida: " + result[i].id + "</Button></li></br>";
+			builder = builder + "<li><Button class='btn btn-secondary' onClick='retomarPartida(" + result[i].id + ")' disabled> Partida: " + result[i].id + "</Button></li></br>";
 		}
 		
 	}
@@ -544,7 +544,7 @@ function avanzar()
 		{
 			console.log("response Avanxar: " + response)
 			var categoria = document.getElementById(response).value;
-    		$("#primerTorn").html("<p>Has tret un : "+response+". Categoria: " + categoria + "</p><button id='btnQuestion' onclick='loadQuestion(\"" + categoria + "\")'>CarregarPregunta</button>");
+    		$("#primerTorn").html("<p>Has tret un : "+response+". Categoria: " + categoria + "</p><button class='btn btn-warning' id='btnQuestion' onclick='loadQuestion(\"" + categoria + "\")'>CarregarPregunta</button>");
     		numDau = response.replace(/\D/g, '');
     		console.log(numDau);
   		},
@@ -615,11 +615,11 @@ function correccioResposta(result)
 	puntuacions = result.puntuacions;	
 	if (correcte) 
 	{
-		$("#contentPregunta").html("<p>OLE! Has encertat. </p><button onclick='nextTorn()'>Next!</button>");
+		$("#contentPregunta").html("<br/><p>OLE! Has encertat. </p><button onclick='nextTorn()' class='btn btn-dark'>Next!</button>");
 	}
 	else
 	{
-		$("#contentPregunta").html("<p>Llastima, aquesta no era la resposta... </p><button onclick='nextTorn()'>Next!</button>");
+		$("#contentPregunta").html("<br/><p>Llastima, aquesta no era la resposta... </p><button onclick='nextTorn()' class='btn btn-dark'>Next!</button>");
 	}	
 	
 }

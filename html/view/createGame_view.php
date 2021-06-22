@@ -1,4 +1,5 @@
 <div>
+	<br/>
 	<p class="log">Crear partida privada:</p>
 	<form class="formulari" autocomplete="on" method="post" id="createGameForm">
 		<input type="number" name="maxPlayers" placeholder="maxPlayers" min=2 max=9 required/><br /><br />
@@ -11,6 +12,6 @@
 		</select> 
 		<br/>
 		<br/>
-		<input  class="boto" type="submit" name="submit" value="Crear" formaction="javascript:createGame()">
+		<input class="btn btn-dark" type="submit" name="submit" value="Crear" formaction="javascript:createGame()">
 	</form>
 </div>

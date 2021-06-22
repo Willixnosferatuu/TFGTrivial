@@ -1,3 +1,4 @@
+<br/>
 <p id="preguntaText">Pregunta DE TEST</p>
 <div>
   <input type="radio" id="resposta1" name="testQuest" value="" checked>
@@ -16,5 +17,5 @@
   <label for="resposta4" name="resposta4"></label>
 </div>
 <div>
-  <button id="btnResponse" onclick="respondrePregunta()" class="">Respondre</button>
+  <button id="btnResponse" onclick="respondrePregunta()" class="btn btn-success">Respondre</button>
 </div>

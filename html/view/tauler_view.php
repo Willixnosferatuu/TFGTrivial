@@ -1,9 +1,9 @@
 <div>
   <div>
     <br/>
-    <button id="btnDau" onclick="avanzar()" class="">Llençar</button> <!--HABILITAR NOMES QUAN ES EL TEU TORN-->
+    <button id="btnDau" onclick="avanzar()" class="btn btn-danger">Llençar</button> <!--HABILITAR NOMES QUAN ES EL TEU TORN-->
   </div>
-  <div id="jugador" style="color: Aqua">
+  <div id="jugador" style="color: BlueViolet">
 
   </div>
   <div id="puntuacions">
